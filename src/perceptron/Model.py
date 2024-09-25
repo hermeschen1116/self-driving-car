@@ -13,7 +13,7 @@ class Perceptron:
         self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
 
         if bias:
-            self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype)
+            self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype) * -1
         else:
             self.bias: numpy.ndarray = numpy.zeros((1), dtype=dtype)
 
