@@ -13,18 +13,18 @@ class Perceptron:
     ) -> None:
         match weight_init_method:
             case "random":
-                self.weights: numpy.ndarray = numpy.random.rand((input_features))
+                self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
             case "one":
-                self.weights: numpy.ndarray = numpy.ones((input_features), dtype=dtype)
+                self.weights: numpy.ndarray = numpy.ones((input_features + 1), dtype=dtype)
             case "zero":
-                self.weights: numpy.ndarray = numpy.zeros((input_features), dtype=dtype)
+                self.weights: numpy.ndarray = numpy.zeros((input_features + 1), dtype=dtype)
             case _:
                 raise ValueError(
                     f"Weight init method should be 'randome', 'one', or 'zero', you input {weight_init_method}."
                 )
 
         if bias:
-            self.bias: numpy.ndarray = numpy.random.rand((1))
+            self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype)
         else:
             self.bias: numpy.ndarray = numpy.zeros((1), dtype=dtype)
 
