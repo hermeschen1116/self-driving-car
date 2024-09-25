@@ -20,6 +20,6 @@ class Perceptron:
         self.dtype: type = dtype
 
     def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-        input: numpy.ndarray = numpy.concatenate(x, self.bias)
+        input: numpy.ndarray = numpy.concatenate(x, self.bias, dtype=self.dtype)
 
         return input.dot(self.weights)
