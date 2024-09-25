@@ -8,20 +8,9 @@ class Perceptron:
         self,
         input_features: int,
         bias: bool,
-        weight_init_method: Optional[Literal["one", "zero", "random"]] = "random",
         dtype: Optional[type] = numpy.float32,
     ) -> None:
-        match weight_init_method:
-            case "random":
-                self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
-            case "one":
-                self.weights: numpy.ndarray = numpy.ones((input_features + 1), dtype=dtype)
-            case "zero":
-                self.weights: numpy.ndarray = numpy.zeros((input_features + 1), dtype=dtype)
-            case _:
-                raise ValueError(
-                    f"Weight init method should be 'randome', 'one', or 'zero', you input {weight_init_method}."
-                )
+        self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
 
         if bias:
             self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype)
