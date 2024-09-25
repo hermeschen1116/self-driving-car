@@ -15,10 +15,21 @@ def read_file(source: str) -> List[Dict[str, Any]]:
         for line in file.readlines():
             values: list = list(line.strip().strip(" "))
 
-            raw_dataset.append({"data": values[:-1], "label": values[-1]})
+            raw_dataset.append(
+                {"data": [float(value) for value in values[:-1]], "label": values[-1]}
+            )
 
     return raw_dataset
 
 
 def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.Dataframe:
     data: list = [numpy.array(row["data"]) for row in raw_dataset]
+    label: list = [row["label"] for row in raw_dataset]
+
+    dataset: polars.DataFrame = polars.DataFrame(
+        {"data": data, "label": label},
+        schema={"data": polars.Array, "label": polars.Int32},
+        orient="col",
+    )
+
+    return dataset
