@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Optional
 
 import numpy
 
@@ -20,6 +20,6 @@ class Perceptron:
         self.dtype: type = dtype
 
     def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-        input: numpy.ndarray = numpy.ndarray(x, dtype=self.dtype)
+        input: numpy.ndarray = numpy.concatenate(x, self.bias)
 
-        return input * self.weights + self.bias
+        return input.dot(self.weights)
