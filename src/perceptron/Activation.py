@@ -1,12 +1,12 @@
 import numpy
 
 
-class UnitStep:
+class ReLU:
     def __init__(self) -> None:
         pass
 
     def forwared(self, x: numpy.ndarray) -> numpy.ndarray:
-        if x > 0:
-            return numpy.ones((1))
+        if x >= 0:
+            return x
         else:
-            return numpy.zeros((1))
+            return numpy.zeros((1), dtype=x.dtype)
