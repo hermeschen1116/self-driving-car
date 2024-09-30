@@ -1,2 +1,2 @@
 def hello() -> None:
-    print("Hello from perceptron!")
+	print("Hello from perceptron!")
