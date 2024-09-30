@@ -9,11 +9,12 @@ class Linear(Module):
 	def __init__(
 		self,
 		input_features: int,
+		output_features: int,
 		bias: bool,
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Linear, self).__init__()
-		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
+		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1), output_features)
 
 		if bias:
 			self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype) * -1
