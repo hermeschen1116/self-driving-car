@@ -25,5 +25,5 @@ class Linear(Module):
 
 		return x_with_bias.dot(self.weights)
 
-	def backward(self, y_i: numpy.ndarray) -> numpy.ndarray:
-		return y_i
+	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
+		return x

@@ -6,12 +6,13 @@ from perceptron.network import Module
 class MeanSquareError(Module):
 	def __init__(self) -> None:
 		super(MeanSquareError, self).__init__()
-		pass
 
-	def forward(self, y_i: numpy.ndarray, y: numpy.ndarray) -> numpy.ndarray:
-		batch_size: int = y_i.shape[0]
+	def forward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
+		self.__gradient = numpy.empty(0)
 
-		return numpy.power((y_i - y), 2).sum() * 0.5 / batch_size
+		batch_size: int = y_predicted.shape[0]
 
-	def backward(self, y_i: numpy.ndarray, y: numpy.ndarray) -> numpy.ndarray:
-		return y_i - y
+		return numpy.power((y_predicted - y_true), 2).sum() * 0.5 / batch_size
+
+	def backward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
+		return y_predicted - y_true

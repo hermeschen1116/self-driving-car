@@ -1,7 +1,7 @@
 import numpy
 from perceptron import network
 from perceptron.network import Module
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, override
 
 from perceptron.network.Activation import ReLU
 from perceptron.network.Layer import Linear
@@ -39,5 +39,3 @@ class Perceptron(Module):
 				x_i = y_i
 
 		return y_i
-
-	def backward(self, y_i: numpy.ndarray) -> numpy.ndarray:
