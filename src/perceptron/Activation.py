@@ -5,7 +5,7 @@ class ReLU:
     def __init__(self) -> None:
         pass
 
-    def forwared(self, x: numpy.ndarray) -> numpy.ndarray:
+    def forward(self, x: numpy.ndarray) -> numpy.ndarray:
         if x >= 0:
             return x
         else:
