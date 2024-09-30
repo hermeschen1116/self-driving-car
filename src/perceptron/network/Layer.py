@@ -16,15 +16,15 @@ class Linear(Module):
 		super(Linear, self).__init__()
 		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1), output_features)
 
-		if bias:
-			self.bias: numpy.ndarray = numpy.ones((1), dtype=dtype) * -1
-		else:
-			self.bias: numpy.ndarray = numpy.zeros((1), dtype=dtype)
+		self.bias: bool = bias
 
 		self.dtype: type = dtype
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		x_with_bias: numpy.ndarray = numpy.concatenate((x, self.bias), dtype=self.dtype)
+		batch_size: int = x.shape[0]
+		bias_array: numpy.ndarray = numpy.ones((batch_size, 1), dtype=self.dtype)
+
+		x_with_bias: numpy.ndarray = numpy.concatenate((x, bias_array), dtype=self.dtype)
 
 		return x_with_bias.dot(self.weights)
 
