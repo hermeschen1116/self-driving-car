@@ -1,4 +1,3 @@
-import random
 from typing import Optional
 
 import numpy
@@ -19,7 +18,7 @@ class Perceptron(Module):
 	) -> None:
 		super(Perceptron, self).__init__()
 
-		hidden_layer_features: int = random.randint(input_features, output_features)
+		hidden_layer_features: int = int((input_features + output_features) / 2) + 1
 
 		self.layers: list = [
 			Linear(input_features, hidden_layer_features, dtype),
