@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from functools import lru_cache
 
 import numpy
 
@@ -9,6 +10,7 @@ class Module(ABC):
 
 	@classmethod
 	@abstractmethod
+	@lru_cache
 	def forward(cls, x: numpy.ndarray, *args, **kwargs) -> numpy.ndarray:
 		return x
 
