@@ -1,7 +1,9 @@
 import numpy
 
+from perceptron import Module
 
-class MSELoss:
+
+class MSELoss(Module):
 	def __init__(self) -> None:
 		pass
 

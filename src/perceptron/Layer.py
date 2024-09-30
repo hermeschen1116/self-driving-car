@@ -2,8 +2,10 @@ from typing import Optional
 
 import numpy
 
+from perceptron import Module
 
-class Linear:
+
+class Linear(Module):
 	def __init__(
 		self,
 		input_features: int,

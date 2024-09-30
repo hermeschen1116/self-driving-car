@@ -1,8 +1,11 @@
 import numpy
 
+from perceptron import Module
 
-class ReLU:
+
+class ReLU(Module):
 	def __init__(self) -> None:
+		super(ReLU, self).__init__()
 		pass
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
