@@ -1,19 +1,21 @@
-import numpy
-from perceptron import network
-from perceptron.network import Module
-from typing import Optional, List, Dict, override
+import random
+from typing import Optional
 
+import numpy
+
+from perceptron.network import Module
 from perceptron.network.Activation import ReLU
 from perceptron.network.Layer import Linear
-import random
 
 
 class Perceptron(Module):
-	def __init__(self,
+	def __init__(
+		self,
 		input_features: int,
 		output_features: int,
 		num_hidden_layers: int = 1,
-		dtype: Optional[type] = numpy.float32) -> None:
+		dtype: Optional[type] = numpy.float32,
+	) -> None:
 		super(Perceptron, self).__init__()
 
 		hidden_layer_features: int = random.randint(input_features, output_features)
@@ -24,7 +26,7 @@ class Perceptron(Module):
 			{"hidden_layer": Linear(hidden_layer_features, hidden_layer_features, dtype)},
 			{"hidden_activation": ReLU},
 			{"output_layer": Linear(hidden_layer_features, output_features, dtype)},
-			{"output_activation": ReLU()}
+			{"output_activation": ReLU()},
 		]
 
 		self.dtype: type = dtype
