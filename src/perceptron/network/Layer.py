@@ -23,9 +23,9 @@ class Linear(Module):
 		self.dtype: type = dtype
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		input: numpy.ndarray = numpy.concatenate((x, self.bias), dtype=self.dtype)
+		x_with_bias: numpy.ndarray = numpy.concatenate((x, self.bias), dtype=self.dtype)
 
-		return input.dot(self.weights)
+		return x_with_bias.dot(self.weights)
 
 	def backward(self, y_i: numpy.ndarray) -> numpy.ndarray:
 		return y_i
