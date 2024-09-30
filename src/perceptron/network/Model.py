@@ -15,7 +15,7 @@ class Perceptron(Module):
 		output_features: int,
 		learnin_rate: float,
 		num_hidden_layers: int = 1,
-		dtype: Optional[type] = numpy.float32
+		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Perceptron, self).__init__()
 
@@ -27,7 +27,7 @@ class Perceptron(Module):
 			Linear(hidden_layer_features, hidden_layer_features, dtype),
 			ReLU,
 			Linear(hidden_layer_features, output_features, dtype),
-			ReLU()
+			ReLU(),
 		]
 
 		self.learning_rate: float = learnin_rate
