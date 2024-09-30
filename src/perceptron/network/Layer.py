@@ -2,7 +2,7 @@ from typing import Optional
 
 import numpy
 
-from perceptron import Module
+from perceptron.network import Module
 
 
 class Linear(Module):

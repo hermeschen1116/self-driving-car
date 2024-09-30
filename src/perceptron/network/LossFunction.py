@@ -1,6 +1,6 @@
 import numpy
 
-from perceptron import Module
+from perceptron.network import Module
 
 
 class MSELoss(Module):
