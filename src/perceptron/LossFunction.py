@@ -2,13 +2,11 @@ import numpy
 
 
 class MSELoss:
-	def __init__(self) -> None:
-		pass
+    def __init__(self) -> None:
+        pass
 
-	def forward(self, y_prediction: numpy.ndarray, y_truth: numpy.ndarray) -> numpy.ndarray:
-		difference: numpy.ndarray = y_prediction - y_truth
+    def forward(self, y_i: numpy.ndarray, y: numpy.ndarray) -> numpy.ndarray:
+        return numpy.power((y_i - y), 2).sum() * 0.5
 
-		return difference.dot(difference) * 0.5
-
-	def backward(self, y_prediction: numpy.ndarray, y_truth: numpy.ndarray) -> numpy.ndarray:
-		return y_prediction - y_truth
+    def backward(self, y_i: numpy.ndarray, y: numpy.ndarray) -> numpy.ndarray:
+        return y_i - y
