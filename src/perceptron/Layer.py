@@ -12,6 +12,7 @@ class Linear(Module):
 		bias: bool,
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
+		super(Linear, self).__init__()
 		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1))
 
 		if bias:
