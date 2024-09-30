@@ -3,7 +3,7 @@ from typing import Optional
 import numpy
 
 
-class Perceptron:
+class Linear:
     def __init__(
         self,
         input_features: int,
