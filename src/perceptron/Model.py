@@ -20,14 +20,12 @@ class Perceptron(Module):
 
 		hidden_layer_features: int = int((input_features + output_features) / 2) + 1
 
-		self.layers: list = [
-			Linear(input_features, hidden_layer_features, dtype),
-			ReLU(),
-			Linear(hidden_layer_features, hidden_layer_features, dtype),
-			ReLU,
-			Linear(hidden_layer_features, output_features, dtype),
-			ReLU(),
-		]
+		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
+		self.activation0 = ReLU()
+		self.hidden_layer = Linear(hidden_layer_features, hidden_layer_features, dtype)
+		self.activation1 = ReLU()
+		self.output_layer = Linear(hidden_layer_features, output_features, dtype)
+		self.activation2 = ReLU()
 
 		self.learning_rate: float = learnin_rate
 		self.dtype: type = dtype
@@ -35,26 +33,28 @@ class Perceptron(Module):
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		x_i: numpy.ndarray = x.astype(self.dtype)
 
-		y_i: numpy.ndarray = x_i
-		for layer in self.layers:
-			y_i = layer(x_i)
-			if layer is not self.layers[-1]:
-				x_i = y_i
+		x_i = self.input_layer(x_i)
+		x_i = self.activation0(x_i)
+		x_i = self.hidden_layer(x_i)
+		x_i = self.activation1(x_i)
+		x_i = self.output_layer(x_i)
+		y: numpy.ndarray = self.activation2(x_i)
 
-		return y_i
+		return y
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
 		return x
 
 	def optimize(self, loss_gradient: numpy.ndarray) -> None:
-		local_gradient: numpy.ndarray = loss_gradient * self.layers[-1].gradient
+		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
+		weight_update: numpy.ndarray = self.learning_rate * local_gradient * self.output_layer.gradient
 
-		self.layers[-2] -= self.learning_rate * local_gradient * self.layers[-2].gradient
+		local_gradient *= self.output_layer.weights * self.activation1.gradient
+		self.output_layer.weights -= weight_update
+		weight_update = self.learning_rate * local_gradient * self.hidden_layer.gradient
 
-		local_gradient *= self.layers[-2].weights * self.layers[-3].gradient
+		local_gradient *= self.hidden_layer.weights * self.activation0.gradient
+		self.hidden_layer.weights -= weight_update
+		weight_update = self.learning_rate * local_gradient * self.input_layer.gradient
 
-		self.layers[-4] -= self.learning_rate * local_gradient * self.layers[-4].gradient
-
-		local_gradient *= self.layers[-4].weights * self.layers[-5].gradient
-
-		self.layers[-6] -= self.learning_rate * local_gradient * self.layers[-6].gradient
+		self.input_layer.weights -= weight_update

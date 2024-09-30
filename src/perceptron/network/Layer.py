@@ -21,7 +21,7 @@ class Linear(Module):
 		batch_size: int = x.shape[0]
 		bias: numpy.ndarray = numpy.ones((batch_size, 1), dtype=self.dtype)
 
-		x_with_bias: numpy.ndarray = numpy.concatenate((x, bias), dtype=self.dtype)
+		x_with_bias: numpy.ndarray = numpy.concatenate((x, bias), axis=1, dtype=self.dtype)
 
 		return x_with_bias.dot(self.weights)
 
