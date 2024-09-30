@@ -6,6 +6,7 @@ import numpy
 def hello() -> None:
 	print("Hello from perceptron!")
 
+
 class Module(ABC):
 	def __init__(self) -> None:
 		super().__init__()
