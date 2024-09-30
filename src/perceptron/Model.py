@@ -44,6 +44,9 @@ class Perceptron(Module):
 
 		return y_i
 
+	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
+		return x
+
 	def optimize(self, loss_gradient: numpy.ndarray) -> None:
 		local_gradient: numpy.ndarray = loss_gradient * self.layers[-1].gradient
 
