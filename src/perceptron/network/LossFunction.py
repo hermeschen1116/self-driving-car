@@ -3,9 +3,9 @@ import numpy
 from perceptron.network import Module
 
 
-class MSELoss(Module):
+class MeanSquareError(Module):
 	def __init__(self) -> None:
-		super(MSELoss, self).__init__()
+		super(MeanSquareError, self).__init__()
 		pass
 
 	def forward(self, y_i: numpy.ndarray, y: numpy.ndarray) -> numpy.ndarray:
