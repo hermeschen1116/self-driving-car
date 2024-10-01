@@ -10,7 +10,9 @@ class MeanSquareError(Module):
 	def forward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
 		y_i: numpy.ndarray = y_predicted
 		if len(y_i.shape) < 3:
-			print(f"Warning: y_prediction should be a batched 2d array, you input a {y_i.shape[0]} size batch of 1d array.")
+			print(
+				f"Warning: y_prediction should be a batched 2d array, you input a {y_i.shape[0]} size batch of 1d array."
+			)
 			y_i = numpy.expand_dims(y_i, 1)
 
 		y: numpy.ndarray = y_true
@@ -27,7 +29,9 @@ class MeanSquareError(Module):
 	def backward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
 		y_i: numpy.ndarray = y_predicted
 		if len(y_i.shape) < 3:
-			print(f"Warning: y_prediction should be a batched 2d array, you input a {y_i.shape[0]} size batch of 1d array.")
+			print(
+				f"Warning: y_prediction should be a batched 2d array, you input a {y_i.shape[0]} size batch of 1d array."
+			)
 			y_i = numpy.expand_dims(y_i, 1)
 
 		y: numpy.ndarray = y_true
