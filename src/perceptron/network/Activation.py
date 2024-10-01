@@ -10,9 +10,19 @@ class ReLU(Module):
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient: numpy.ndarray = numpy.empty(0)
 
-		filter: numpy.ndarray = numpy.astype(x >= 0, x.dtype)
+		x_i: numpy.ndarray = x
+		if len(x_i.shape) < 3:
+			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			x_i = numpy.expand_dims(x_i, 1)
 
-		return x * filter
+		return x_i * (x_i >= 0)
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
-		return numpy.astype(x >= 0, x.dtype)
+		x_i: numpy.ndarray = x
+		if len(x_i.shape) < 3:
+			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			x_i = numpy.expand_dims(x_i, 1)
+
+		batch_size: int = x.shape[0]
+
+		return numpy.astype(x_i >= 0, x_i.dtype).sum(axis=0) / batch_size
