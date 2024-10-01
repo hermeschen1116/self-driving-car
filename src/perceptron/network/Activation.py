@@ -8,12 +8,12 @@ class ReLU(Module):
 		super(ReLU, self).__init__()
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		self.__gradient: numpy.ndarray = numpy.empty(0)
-
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
 			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
+
+		self.__gradient: numpy.ndarray = numpy.empty(0)
 
 		return x_i * (x_i >= 0)
 
@@ -31,12 +31,12 @@ class Sigmoid(Module):
 		super(Sigmoid, self).__init__()
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		self.__gradient: numpy.ndarray = numpy.empty(0)
-
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
 			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
+
+		self.__gradient: numpy.ndarray = numpy.empty(0)
 
 		return 1 / (1 + numpy.exp(x_i * -1))
 

@@ -28,5 +28,5 @@ class Module(ABC):
 
 	@classmethod
 	@abstractmethod
-	def backward(cls, y: numpy.ndarray, *args, **kwargs) -> numpy.ndarray:
-		return y
+	def backward(cls, x: numpy.ndarray, *args, **kwargs) -> numpy.ndarray:
+		return x
