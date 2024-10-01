@@ -3,7 +3,7 @@ from typing import Optional
 import numpy
 
 from perceptron.network import Module
-from perceptron.network.Activation import ReLU
+from perceptron.network.Activation import ReLU, Sigmoid
 from perceptron.network.Layer import Linear
 
 
@@ -28,7 +28,7 @@ class Perceptron(Module):
 		self.activation1 = ReLU()
 		self.output_layer = Linear(hidden_layer_features, output_features, dtype)
 		print(self.output_layer.weights.shape)
-		self.activation2 = ReLU()
+		self.activation2 = Sigmoid()
 
 		self.learning_rate: float = learnin_rate
 		self.dtype: type = dtype
