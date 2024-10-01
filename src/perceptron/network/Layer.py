@@ -32,10 +32,9 @@ class Linear(Module):
 		return self.__concatenate_bias(x)
 
 	def optimize(self, local_gradient: numpy.ndarray) -> numpy.ndarray:
-		batch_size: int = local_gradient.shape[0]
-
 		old_weights: numpy.ndarray = self.weights
-		weight_update: numpy.ndarray = numpy.sum((local_gradient * self.gradient), axis=0) / batch_size
+
+		weight_update: numpy.ndarray = self.gradient.dot(local_gradient)
 		if weight_update.shape != self.weights.shape:
 			raise ValueError(f"weight_update should be in shape {self.weights.shape}")
 		self.weights = self.weights - weight_update

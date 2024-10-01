@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Optional
 
 import numpy
@@ -47,21 +46,11 @@ class Perceptron(Module):
 		return x
 
 	def optimize(self, loss_gradient: numpy.ndarray) -> None:
-		batch_size: int = loss_gradient.shape[0]
-
 		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
-		weight_update: numpy.ndarray = (
-			self.learning_rate * numpy.matmul(local_gradient, self.output_layer.gradient).sum(0) / batch_size
-		)
+		layer_gradient: numpy.ndarray = self.output_layer.optimize(local_gradient * self.learning_rate)
 
-		local_gradient = local_gradient * self.output_layer.weights * self.activation1.gradient
-		self.output_layer.weights = self.output_layer.weights - weight_update
-		weight_update = (
-			self.learning_rate * numpy.matmul(self.hidden_layer.gradient, local_gradient).sum(0) / batch_size
-		)
+		local_gradient = self.activation1.gradient * numpy.sum(layer_gradient * local_gradient, axis=0)
+		layer_gradient = self.hidden_layer.optimize(local_gradient * self.learning_rate)
 
-		local_gradient = (local_gradient * self.hidden_layer.weights) * self.activation0.gradient
-		self.hidden_layer.weights = self.hidden_layer.weights - weight_update
-		weight_update = self.learning_rate * numpy.matmul(self.input_layer.gradient, local_gradient).sum(0) / batch_size
-
-		self.input_layer.weights = self.input_layer.weights - weight_update
+		local_gradient = self.activation0.gradient * numpy.sum(layer_gradient * local_gradient, axis=0)
+		self.input_layer.optimize(local_gradient * self.learning_rate)
