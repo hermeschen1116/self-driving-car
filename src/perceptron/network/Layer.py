@@ -19,24 +19,25 @@ class Linear(Module):
 
 	def __concatenate_bias(self, x: numpy.ndarray) -> numpy.ndarray:
 		batch_size: int = x.shape[0]
-		bias: numpy.ndarray = numpy.ones((batch_size, 1, 1), dtype=self.dtype) * -1
+		bias: numpy.ndarray = numpy.ones((batch_size, 1), dtype=self.dtype) * -1
 
 		return numpy.concatenate((x, bias), axis=-1, dtype=self.dtype)
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		x_i: numpy.ndarray = x
-		if len(x_i.shape) < 3:
-			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
-			x_i = numpy.expand_dims(x_i, 1)
-
 		self.__gradient: numpy.ndarray = numpy.empty(0)
 
-		return self.__concatenate_bias(x_i).dot(self.weights)
+		return self.__concatenate_bias(x).dot(self.weights)
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
-		x_i: numpy.ndarray = x
-		if len(x_i.shape) < 3:
-			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
-			x_i = numpy.expand_dims(x_i, 1)
+		return self.__concatenate_bias(x)
 
-		return self.__concatenate_bias(x_i)
+	def optimize(self, local_gradient: numpy.ndarray) -> numpy.ndarray:
+		batch_size: int = local_gradient.shape[0]
+
+		old_weights: numpy.ndarray = self.weights
+		weight_update: numpy.ndarray = numpy.sum((local_gradient * self.gradient), axis=0) / batch_size
+		if weight_update.shape != self.weights.shape:
+			raise ValueError(f"weight_update should be in shape {self.weights.shape}")
+		self.weights = self.weights - weight_update
+
+		return old_weights
