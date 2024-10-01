@@ -10,7 +10,5 @@ model = Perceptron(2, 1, 0.05)
 loss_fn = MeanSquareError()
 
 output = model(data)
-print(output)
 loss = loss_fn(output, label)
-
-# model.optimize(loss_fn.gradient)
+model.optimize(loss_fn.gradient)

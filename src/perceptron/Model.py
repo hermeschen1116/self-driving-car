@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import Optional
 
 import numpy
@@ -21,13 +22,10 @@ class Perceptron(Module):
 		hidden_layer_features: int = int((input_features + output_features) / 2) + 1
 
 		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
-		print(self.input_layer.weights.shape)
 		self.activation0 = ReLU()
 		self.hidden_layer = Linear(hidden_layer_features, hidden_layer_features, dtype)
-		print(self.hidden_layer.weights.shape)
 		self.activation1 = ReLU()
 		self.output_layer = Linear(hidden_layer_features, output_features, dtype)
-		print(self.output_layer.weights.shape)
 		self.activation2 = Sigmoid()
 
 		self.learning_rate: float = learnin_rate
@@ -49,15 +47,21 @@ class Perceptron(Module):
 		return x
 
 	def optimize(self, loss_gradient: numpy.ndarray) -> None:
-		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
-		weight_update: numpy.ndarray = self.learning_rate * (local_gradient * self.output_layer.gradient)
+		batch_size: int = loss_gradient.shape[0]
 
-		local_gradient = (local_gradient * self.output_layer.weights) * self.activation1.gradient
+		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
+		weight_update: numpy.ndarray = (
+			self.learning_rate * numpy.matmul(local_gradient, self.output_layer.gradient).sum(0) / batch_size
+		)
+
+		local_gradient = local_gradient * self.output_layer.weights * self.activation1.gradient
 		self.output_layer.weights = self.output_layer.weights - weight_update
-		weight_update = self.learning_rate * (self.hidden_layer.gradient * local_gradient)
+		weight_update = (
+			self.learning_rate * numpy.matmul(self.hidden_layer.gradient, local_gradient).sum(0) / batch_size
+		)
 
 		local_gradient = (local_gradient * self.hidden_layer.weights) * self.activation0.gradient
 		self.hidden_layer.weights = self.hidden_layer.weights - weight_update
-		weight_update = self.learning_rate * local_gradient.dot(self.input_layer.gradient)
+		weight_update = self.learning_rate * numpy.matmul(self.input_layer.gradient, local_gradient).sum(0) / batch_size
 
 		self.input_layer.weights = self.input_layer.weights - weight_update

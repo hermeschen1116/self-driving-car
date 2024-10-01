@@ -23,9 +23,7 @@ class ReLU(Module):
 			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
-		batch_size: int = x.shape[0]
-
-		return numpy.astype(x_i >= 0, x_i.dtype).sum(axis=0) / batch_size
+		return numpy.astype(x_i >= 0, x_i.dtype)
 
 
 class Sigmoid(Module):
@@ -48,6 +46,4 @@ class Sigmoid(Module):
 			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
-		batch_size: int = x_i.shape[0]
-
-		return numpy.sum((1 / (1 + numpy.exp(x_i * -1))) * (1 - 1 / (1 + numpy.exp(x_i * -1))), axis=0) / batch_size
+		return (1 / (1 + numpy.exp(x_i * -1))) * (1 - 1 / (1 + numpy.exp(x_i * -1)))

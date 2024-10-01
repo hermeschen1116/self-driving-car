@@ -39,6 +39,4 @@ class MeanSquareError(Module):
 			print(f"Warning: y_true should be a batched 2d array, you input a {y_i.shape[0]} size batch of 1d array.")
 			y = numpy.expand_dims(y, 1)
 
-		batch_size: int = y_i.shape[0]
-
-		return numpy.sum(y_i - y, axis=0) / batch_size
+		return y_i - y

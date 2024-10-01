@@ -39,6 +39,4 @@ class Linear(Module):
 			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
-		batch_size: int = x_i.shape[0]
-
-		return self.__concatenate_bias(x_i).sum(axis=0) / batch_size
+		return self.__concatenate_bias(x_i)
