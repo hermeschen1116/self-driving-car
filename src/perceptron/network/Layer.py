@@ -26,7 +26,7 @@ class Linear(Module):
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
-			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
 		self.__gradient: numpy.ndarray = numpy.empty(0)
@@ -36,7 +36,7 @@ class Linear(Module):
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
-			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
 		batch_size: int = x_i.shape[0]

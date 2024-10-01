@@ -12,7 +12,7 @@ class ReLU(Module):
 
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
-			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
 		return x_i * (x_i >= 0)
@@ -20,7 +20,7 @@ class ReLU(Module):
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
 		x_i: numpy.ndarray = x
 		if len(x_i.shape) < 3:
-			raise Warning(f"x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
+			print(f"Warning: x should be a batched 2d array, you input a {x.shape[0]} size batch of 1d array.")
 			x_i = numpy.expand_dims(x_i, 1)
 
 		batch_size: int = x.shape[0]
