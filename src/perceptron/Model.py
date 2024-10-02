@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 import numpy
 
@@ -31,7 +31,7 @@ class Perceptron(Module):
 		self.dtype: type = dtype
 
 	@property
-	def weights(self) -> List[numpy.array]:
+	def weights(self) -> List[numpy.ndarray]:
 		return [self.input_layer.weights.T, self.hidden_layer.weights.T, self.output_layer.weights.T]
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
