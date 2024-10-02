@@ -13,7 +13,7 @@ class Linear(Module):
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Linear, self).__init__()
-		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1), output_features)
+		self.weights: numpy.ndarray = numpy.random.rand(output_features, (input_features + 1))
 
 		self.dtype: type = dtype
 
@@ -26,7 +26,7 @@ class Linear(Module):
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient: numpy.ndarray = numpy.empty(0)
 
-		return self.__concatenate_bias(x).dot(self.weights)
+		return self.__concatenate_bias(x).dot(self.weights.T)
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
 		return self.__concatenate_bias(x)
@@ -37,6 +37,6 @@ class Linear(Module):
 		weight_update: numpy.ndarray = self.gradient.dot(local_gradient)
 		if weight_update.shape != self.weights.shape:
 			raise ValueError(f"weight_update should be in shape {self.weights.shape}")
-		self.weights = self.weights - weight_update
+		self.weights = self.weights - weight_update.T
 
 		return old_weights
