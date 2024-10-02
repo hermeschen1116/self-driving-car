@@ -22,3 +22,8 @@ line-length = 120
 quote-style = "double"
 indent-style = "tab"
 docstring-code-format = true
+
+[tool.uv]
+dev-dependencies = [
+    "installer>=0.7.0",
+]
