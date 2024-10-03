@@ -11,9 +11,10 @@ dependencies = [
 	"tk>=0.1.0",
 ]
 
-[build-system]
-requires = ["hatchling", "hatch-pyinstaller"]
-build-backend = "hatchling.build"
+[tool.uv]
+dev-dependencies = [
+	"pyinstaller>=6.10.0",
+]
 
 [tool.ruff]
 line-length = 120
@@ -23,9 +24,6 @@ quote-style = "double"
 indent-style = "tab"
 docstring-code-format = true
 
-[tool.uv]
-dev-dependencies = ["hatch-pyinstaller>=1.0.1", "pyinstaller>=6.10.0"]
-
-[tool.hatch.build.targets.pyinstaller]
-require-runtime-dependencies = true
-flags = ["--clean", "--onedir", "--optimze 2"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
