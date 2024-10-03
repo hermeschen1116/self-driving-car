@@ -1,7 +1,7 @@
 [project]
 name = "perceptron"
 version = "0.1.0"
-description = "Add your description here"
+description = "Self implementation of perceptron using Numpy"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,9 +12,7 @@ dependencies = [
 ]
 
 [tool.uv]
-dev-dependencies = [
-	"pyinstaller>=6.10.0",
-]
+dev-dependencies = ["pyinstaller>=6.10.0"]
 
 [tool.ruff]
 line-length = 120
