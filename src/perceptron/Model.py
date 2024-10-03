@@ -12,7 +12,7 @@ class Perceptron(Module):
 		self,
 		input_features: int,
 		output_features: int,
-		learnin_rate: float,
+		learning_rate: float,
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Perceptron, self).__init__()
@@ -24,7 +24,7 @@ class Perceptron(Module):
 		self.output_layer = Linear(3, output_features, dtype)
 		self.activation2 = Sigmoid()
 
-		self.learning_rate: float = learnin_rate
+		self.learning_rate: float = learning_rate
 		self.dtype: type = dtype
 
 	@property
