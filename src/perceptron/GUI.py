@@ -4,6 +4,10 @@ from typing import Dict, Tuple
 from matplotlib import pyplot
 from matplotlib.figure import Figure
 
+from perceptron.data.Preprocess import create_dataset, create_split, read_file
+from perceptron.Model import Perceptron
+from perceptron.network.LossFunction import MeanSquareError
+from perceptron.Trainer import evaluate, get_in_out_features, train
 from perceptron.ui.Button import create_button
 from perceptron.ui.Canvas import create_figure_canvas
 from perceptron.ui.Menu import create_named_menu
@@ -20,6 +24,8 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 		"num_epochs": tkinter.IntVar(name="num_epochs", value=1),
 		"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
 		"optimize_target": tkinter.StringVar(name="optimize_target", value="epoch"),
+		"train_accuracy": tkinter.DoubleVar(name="train_accuracy"),
+		"test_accuracy": tkinter.DoubleVar(name="test_accuracy"),
 	}
 
 	control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
@@ -42,10 +48,20 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 	)
 	menu_optimize_target.pack(fill="x")
 
-	show = lambda: print(
-		f"Learning Rate: {variables['learning_rate'].get()}, Number of Epochs: {variables['num_epochs'].get()}"
-	)
-	button_train = create_button(control_group, name="Train & Evaluation", function=show)
+	def on_button_activate():
+		raw_dataset: list = read_file(variables["data_path"])
+		dataset = create_dataset(raw_dataset)
+		train_dataset, test_dataset = create_split(dataset, [2 / 3, 1 / 3])
+
+		in_feature, out_feature = get_in_out_features(dataset)
+
+		model = Perceptron(in_feature, out_feature, variables["learning_rate"])
+		loss_function = MeanSquareError()
+
+		train(train_dataset, model, loss_function, variables)
+		evaluate(test_dataset, model, variables)
+
+	button_train = create_button(control_group, name="Train & Evaluation", function=on_button_activate)
 	button_train.pack(side="bottom", fill="x")
 
 	visual_group = tkinter.LabelFrame(padx=30, pady=30, border=0)

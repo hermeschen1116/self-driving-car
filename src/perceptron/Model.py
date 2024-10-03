@@ -13,18 +13,15 @@ class Perceptron(Module):
 		input_features: int,
 		output_features: int,
 		learnin_rate: float,
-		num_hidden_layers: int = 1,
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Perceptron, self).__init__()
 
-		hidden_layer_features: int = int((input_features + output_features) / 2) + 1
-
-		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
+		self.input_layer = Linear(input_features, 3, dtype)
 		self.activation0 = ReLU()
-		self.hidden_layer = Linear(hidden_layer_features, hidden_layer_features, dtype)
+		self.hidden_layer = Linear(3, 3, dtype)
 		self.activation1 = ReLU()
-		self.output_layer = Linear(hidden_layer_features, output_features, dtype)
+		self.output_layer = Linear(3, output_features, dtype)
 		self.activation2 = Sigmoid()
 
 		self.learning_rate: float = learnin_rate
