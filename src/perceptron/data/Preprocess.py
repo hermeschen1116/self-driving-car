@@ -1,11 +1,11 @@
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy
 import polars
 
 
-def read_file(source: str) -> List[Dict[str, Any]]:
+def read_file(source: Union[str, os.PathLike]) -> List[Dict[str, Any]]:
 	if not os.path.exists(source):
 		raise ValueError(f"Input path '{source}' doesn't exist.")
 

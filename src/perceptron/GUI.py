@@ -1,4 +1,5 @@
 import tkinter
+from tkinter.filedialog import askopenfilename
 from typing import Dict, Tuple
 
 from matplotlib import pyplot
@@ -19,7 +20,6 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 	window: tkinter.Tk = create_window("Perceptron", "")
 
 	variables: dict = {
-		"data_path": tkinter.StringVar(name="data_path", value=""),
 		"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.05),
 		"num_epochs": tkinter.IntVar(name="num_epochs", value=1),
 		"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
@@ -30,9 +30,6 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 
 	control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 	control_group.pack(side="right")
-
-	textbox_data = create_named_textbox(control_group, "Data", variables["data_path"])
-	textbox_data.pack()
 
 	textbox_learning_rate = create_named_textbox(control_group, "Learning Rate", variables["learning_rate"])
 	textbox_learning_rate.pack()
@@ -49,7 +46,7 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 	menu_optimize_target.pack(fill="x")
 
 	def on_button_activate():
-		raw_dataset: list = read_file(variables["data_path"])
+		raw_dataset: list = read_file(askopenfilename())
 		dataset = create_dataset(raw_dataset)
 		train_dataset, test_dataset = create_split(dataset, [2 / 3, 1 / 3])
 
