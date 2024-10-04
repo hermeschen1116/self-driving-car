@@ -15,7 +15,7 @@ def train(dataset, model, loss_function, variables):
 	label_true: list = dataset.get_column("label").to_list()
 	for i in range(variables["num_epochs"].get()):
 		label_predicted: list = []
-		for row in dataset.iter_rows(named=True):
+		for row in dataset.iter_slices(4):
 			data, one_hot_label = row["data"].to_numpy(), row["one_hot_label"].to_numpy()
 
 			output = model(data)
@@ -34,7 +34,7 @@ def train(dataset, model, loss_function, variables):
 def evaluate(dataset, model, variables):
 	label_true: list = dataset.get_column("label").to_list()
 	label_predicted: list = []
-	for row in dataset.iter_rows(named=True):
+	for row in dataset.iter_slices(4):
 		data = row["data"].to_numpy()
 
 		output = model(data)
