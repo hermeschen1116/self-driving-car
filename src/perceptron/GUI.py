@@ -2,6 +2,7 @@ import tkinter
 from tkinter.filedialog import askopenfilename
 from typing import Dict, Tuple
 
+import polars
 from matplotlib import pyplot
 from matplotlib.figure import Figure
 
@@ -47,8 +48,11 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 
 	def on_button_activate():
 		raw_dataset: list = read_file(askopenfilename())
-		dataset = create_dataset(raw_dataset)
-		train_dataset, test_dataset = create_split(dataset, [2 / 3, 1 / 3])
+		dataset: polars.DataFrame = create_dataset(raw_dataset)
+		dataset_splits: dict = create_split(dataset, [2 / 3, 1 / 3])
+
+		train_dataset: polars.DataFrame = dataset_splits["train"]
+		test_dataset: polars.DataFrame = dataset_splits["test"]
 
 		in_feature, out_feature = get_in_out_features(dataset)
 
