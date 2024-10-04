@@ -56,7 +56,7 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 
 		in_feature, out_feature = get_in_out_features(dataset)
 
-		model = Perceptron(in_feature, out_feature, variables["learning_rate"])
+		model = Perceptron(in_feature, out_feature, variables["learning_rate"].get())
 		loss_function = MeanSquareError()
 
 		train(train_dataset, model, loss_function, variables)
