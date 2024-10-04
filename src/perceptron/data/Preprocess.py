@@ -30,7 +30,11 @@ def label_regularization(dataset):
 
 def add_one_hot_label(dataset):
 	labels: list = dataset.get_column("label").unique().to_list()
-	one_hot_labels_map: dict = dict(zip(labels, numpy.eye(len(labels)).tolist()))
+	label_size: int = int(numpy.ceil(numpy.log2(len(labels))))
+	one_hot_labels: list = [
+		numpy.array(list(numpy.binary_repr(label).zfill(label_size)), dtype=numpy.float32) for label in labels
+	]
+	one_hot_labels_map: dict = dict(zip(labels, one_hot_labels))
 
 	dataset = dataset.with_columns(polars.col("label").replace_strict(one_hot_labels_map).alias("one_hot_label"))
 
@@ -53,7 +57,7 @@ def create_dataset(raw_dataset: List[Dict[str, Any]]):
 	return dataset
 
 
-def create_split(dataset: polars.DataFrame, split: List[float]):
+def create_split(dataset: polars.DataFrame, split: List[float]) -> Union[polars.DataFrame, Dict[str, polars.DataFrame]]:
 	if sum(split) != 1:
 		raise ValueError("Summation of split should be 1")
 
@@ -69,7 +73,7 @@ def create_split(dataset: polars.DataFrame, split: List[float]):
 			train_dataset: polars.DataFrame = shuffled_dataset[0:num_row_train_split]
 			test_dataset: polars.DataFrame = shuffled_dataset[num_row_train_split:]
 
-			return train_dataset, test_dataset
+			return {"train": train_dataset, "test": test_dataset}
 		case 3:
 			num_row_train_split: int = int(dataset_size * split[0])
 			num_row_validation_split: int = int(dataset_size * split[1])
@@ -80,6 +84,6 @@ def create_split(dataset: polars.DataFrame, split: List[float]):
 			]
 			test_dataset: polars.DataFrame = shuffled_dataset[num_row_train_split + num_row_validation_split :]
 
-			return train_dataset, validation_dataset, test_dataset
+			return {"train": train_dataset, "validation": validation_dataset, "test": test_dataset}
 		case _:
 			raise ValueError("length of split should be in [1, 3].")
