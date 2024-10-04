@@ -1,8 +1,7 @@
+
 import numpy
 
 from perceptron.network import Module
-from functools import reduce
-from operator import mul
 
 
 class MeanSquareError(Module):

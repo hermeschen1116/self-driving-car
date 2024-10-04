@@ -17,12 +17,12 @@ class Perceptron(Module):
 	) -> None:
 		super(Perceptron, self).__init__()
 
-		self.input_layer = Linear(input_features, 3, dtype) # (input_features + 1, 3)
-		self.activation0 = ReLU()   # (batch_size, 3)
-		self.hidden_layer = Linear(3, 3, dtype) # (4, 3)
-		self.activation1 = ReLU()   # (batch_size, 3)
-		self.output_layer = Linear(3, output_features, dtype)   # (4, output_features)
-		self.activation2 = Sigmoid()    # (batch_size, output_features)
+		self.input_layer = Linear(input_features, 3, dtype)  # (input_features + 1, 3)
+		self.activation0 = ReLU()  # (batch_size, 3)
+		self.hidden_layer = Linear(3, 3, dtype)  # (4, 3)
+		self.activation1 = ReLU()  # (batch_size, 3)
+		self.output_layer = Linear(3, output_features, dtype)  # (4, output_features)
+		self.activation2 = Sigmoid()  # (batch_size, output_features)
 
 		self.learning_rate: float = learning_rate
 		self.dtype: type = dtype
