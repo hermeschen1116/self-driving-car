@@ -1,6 +1,8 @@
 import numpy
 
 from perceptron.network import Module
+from functools import reduce
+from operator import mul
 
 
 class MeanSquareError(Module):
@@ -12,7 +14,7 @@ class MeanSquareError(Module):
 
 		batch_size: int = y_predicted.shape[0]
 
-		return numpy.sum((numpy.power((y_predicted - y_true), 2) * 0.5), axis=0) / batch_size
+		return numpy.sum((numpy.power((y_predicted - y_true), 2) * 0.5)) / batch_size
 
 	def backward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
 		return y_predicted - y_true

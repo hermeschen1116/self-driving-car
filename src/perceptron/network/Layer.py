@@ -13,30 +13,27 @@ class Linear(Module):
 		dtype: Optional[type] = numpy.float32,
 	) -> None:
 		super(Linear, self).__init__()
-		self.weights: numpy.ndarray = numpy.random.rand((input_features + 1), output_features)
+		self.weights: numpy.ndarray = numpy.random.rand(input_features, output_features)
+		self.bias: numpy.ndarray = numpy.random.rand(1, output_features)
 
 		self.dtype: type = dtype
-
-	def __concatenate_bias(self, x: numpy.ndarray) -> numpy.ndarray:
-		batch_size: int = x.shape[0]
-		bias: numpy.ndarray = numpy.ones((batch_size, 1), dtype=self.dtype) * -1
-
-		return numpy.concatenate((x, bias), axis=-1, dtype=self.dtype)
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient: numpy.ndarray = numpy.empty(0)
 
-		return self.__concatenate_bias(x).dot(self.weights)
+		return x.dot(self.weights) + self.bias
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
-		return self.__concatenate_bias(x)
+		return x
 
 	def optimize(self, local_gradient: numpy.ndarray) -> numpy.ndarray:
 		old_weights: numpy.ndarray = self.weights
 
-		weight_update: numpy.ndarray = self.gradient.dot(local_gradient)
+		weight_update: numpy.ndarray = self.gradient.T.dot(local_gradient)
+		bias_update: numpy.ndarray = local_gradient.sum(0)
 		if weight_update.shape != self.weights.shape:
 			raise ValueError(f"weight_update should be in shape {self.weights.shape}")
 		self.weights = self.weights - weight_update
+		self.bias = self.bias - bias_update
 
 		return old_weights

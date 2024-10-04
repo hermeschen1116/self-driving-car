@@ -17,12 +17,12 @@ class Perceptron(Module):
 	) -> None:
 		super(Perceptron, self).__init__()
 
-		self.input_layer = Linear(input_features, 3, dtype)
-		self.activation0 = ReLU()
-		self.hidden_layer = Linear(3, 3, dtype)
-		self.activation1 = ReLU()
-		self.output_layer = Linear(3, output_features, dtype)
-		self.activation2 = Sigmoid()
+		self.input_layer = Linear(input_features, 3, dtype) # (input_features + 1, 3)
+		self.activation0 = ReLU()   # (batch_size, 3)
+		self.hidden_layer = Linear(3, 3, dtype) # (4, 3)
+		self.activation1 = ReLU()   # (batch_size, 3)
+		self.output_layer = Linear(3, output_features, dtype)   # (4, output_features)
+		self.activation2 = Sigmoid()    # (batch_size, output_features)
 
 		self.learning_rate: float = learning_rate
 		self.dtype: type = dtype
@@ -48,10 +48,10 @@ class Perceptron(Module):
 
 	def optimize(self, loss_gradient: numpy.ndarray) -> None:
 		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
-		layer_gradient: numpy.ndarray = self.output_layer.optimize(local_gradient * self.learning_rate)
+		layer_gradient: numpy.ndarray = self.output_layer.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = self.activation1.gradient * numpy.sum(layer_gradient * local_gradient, axis=0)
-		layer_gradient = self.hidden_layer.optimize(local_gradient * self.learning_rate)
+		local_gradient = local_gradient.dot(layer_gradient.T) * self.activation1.gradient
+		layer_gradient = self.hidden_layer.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = self.activation0.gradient * numpy.sum(layer_gradient * local_gradient, axis=0)
-		self.input_layer.optimize(local_gradient * self.learning_rate)
+		local_gradient = local_gradient.dot(layer_gradient.T) * self.activation0.gradient
+		self.input_layer.optimize(self.learning_rate * local_gradient)
