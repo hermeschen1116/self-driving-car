@@ -47,8 +47,6 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 
 	def on_button_activate():
 		file_path: str = askopenfilename()
-		if file_path == "":
-			pass
 
 		raw_dataset: list = read_file(file_path)
 		dataset: polars.DataFrame = create_dataset(raw_dataset)
