@@ -1,17 +1,24 @@
-from typing import Tuple
+import tkinter
+from typing import Dict, Tuple
 
-from polars.dependencies import numpy
+import numpy
+import polars
+from matplotlib.axes import Axes
 from sklearn.metrics import accuracy_score
 
+from perceptron.data.Visualize import draw_points, get_points_groups
 
-def get_in_out_features(dataset) -> Tuple[int, int]:
+
+def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 	data_size: int = numpy.array(dataset[0]["data"]).shape[1]
 	label_size: int = len(dataset.get_column("label").unique().to_list())
 
 	return data_size, label_size
 
 
-def train(dataset, model, loss_function, variables) -> (int, float):
+def train(
+	dataset: polars.DataFrame, model, loss_function, ax: Axes, canvas, variables: Dict[str, tkinter.Variable]
+) -> Tuple[int, float]:
 	label_true: list = dataset.get_column("label").to_list()
 	accuracy: float = 0
 	current_epochs: int = 0
@@ -30,7 +37,6 @@ def train(dataset, model, loss_function, variables) -> (int, float):
 
 			model.optimize(loss_function.gradient)
 
-		current_epochs += 1
 		print(f"epchs{current_epochs}, loss: {sum(all_loss)/ len(all_loss)}")
 		accuracy = accuracy_score(label_true, label_predicted)
 
@@ -39,16 +45,23 @@ def train(dataset, model, loss_function, variables) -> (int, float):
 		):
 			break
 
+		current_epochs += 1
+
 	return current_epochs, accuracy
 
 
-def evaluate(dataset, model, variables) -> float:
+def evaluate(dataset: polars.DataFrame, model, ax: Axes, canvas, variables: Dict[str, tkinter.Variable]) -> float:
 	label_true: list = dataset.get_column("label").to_list()
 	label_predicted: list = []
+
 	for row in dataset.iter_slices(4):
 		data = row["data"].to_numpy()
 
 		output = model(data)
 		label_predicted += output.argmax(-1).tolist()
+
+	group_points: list = get_points_groups(dataset, label_predicted)
+	draw_points(ax, group_points)
+	canvas.draw()
 
 	return accuracy_score(label_true, label_predicted)

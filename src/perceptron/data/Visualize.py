@@ -3,11 +3,13 @@ from typing import List
 
 import numpy
 import polars
-from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 
 
 def get_points_groups(dataset: polars.DataFrame, predictions: List[int]) -> List[List[List[float]]]:
-	points: polars.DataFrame = dataset.select("data").with_columns(polars.lit(predictions).alias("predictions"))
+	points: polars.DataFrame = dataset.select("data").with_columns(
+		polars.Series(name="predictions", values=predictions)
+	)
 
 	group_points: list = points.group_by("predictions").agg(polars.col("data")).get_column("data").to_list()
 
@@ -25,7 +27,7 @@ def get_points_groups(dataset: polars.DataFrame, predictions: List[int]) -> List
 
 
 def random_color_hex() -> str:
-	return f"#{("%06x" % random.randint(0, 0xFFFFFF)).upper()}"
+	return f"#{("%06x" % random.randint(0, 0xF00000)).upper()}"
 
 
 def generate_point_group_color(num_group: int) -> List[str]:
@@ -35,25 +37,24 @@ def generate_point_group_color(num_group: int) -> List[str]:
 			break
 
 		color: str = random_color_hex()
-		if color not in colors:
+		if (color not in colors) and (colors != "#4287f5"):
 			colors.append(color)
 
 	return colors
 
 
-def draw_points(figure: Figure, group_points: List[List[List[float]]]):
+def draw_points(ax: Axes, group_points: List[List[List[float]]]) -> bool:
 	dimension: int = len(group_points[0])
 	colors: list = generate_point_group_color(len(group_points))
 
-
 	match dimension:
 		case 2:
-			ax = figure.add_subplot()
 			for i, group in enumerate(group_points):
-				ax.scatter(group[0], group[1], c=colors[i])
+				ax.scatter(group[0], group[1], c=colors[i], marker="*")
 		case 3:
-			ax = figure.add_subplot(projection="3d")
 			for i, group in enumerate(group_points):
-				ax.scatter(group[0], group[1], group[2], c=colors[i])
+				ax.scatter(group[0], group[1], group[2], c=colors[i], marker="*")
 		case _:
-			return figure
+			return False
+
+	return True
