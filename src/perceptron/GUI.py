@@ -1,4 +1,5 @@
 import tkinter
+from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from typing import Dict, Tuple
 
@@ -25,8 +26,6 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 		"num_epochs": tkinter.IntVar(name="num_epochs", value=1),
 		"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
 		"optimize_target": tkinter.StringVar(name="optimize_target", value="epoch"),
-		"train_accuracy": tkinter.DoubleVar(name="train_accuracy"),
-		"test_accuracy": tkinter.DoubleVar(name="test_accuracy"),
 	}
 
 	control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
@@ -35,7 +34,7 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 	textbox_learning_rate = create_named_textbox(control_group, "Learning Rate", variables["learning_rate"])
 	textbox_learning_rate.pack()
 
-	textbox_num_epochs = create_named_textbox(control_group, "Number of Epochs", variables["num_epochs"])
+	textbox_num_epochs = create_named_textbox(control_group, "Number of Epochs (within)", variables["num_epochs"])
 	textbox_num_epochs.pack()
 
 	textbox_target_accuracy = create_named_textbox(control_group, "Target Accuracy", variables["target_accuracy"])
@@ -59,8 +58,17 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 		model = Perceptron(in_feature, out_feature, variables["learning_rate"].get())
 		loss_function = MeanSquareError()
 
-		train(train_dataset, model, loss_function, variables)
-		evaluate(test_dataset, model, variables)
+		train_accuracy: float = train(train_dataset, model, loss_function, variables)
+		test_accuracy: float = evaluate(test_dataset, model, variables)
+
+		result_message: str = f"""
+							   Train Accuracy: {train_accuracy}
+							   Test Accuracy: {test_accuracy}
+							   Weight:
+							   {model.show_weights()}
+							   """
+
+		messagebox.showinfo(message=result_message)
 
 	button_train = create_button(control_group, name="Train & Evaluation", function=on_button_activate)
 	button_train.pack(side="bottom", fill="x")
@@ -71,6 +79,6 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 	figure: Figure = pyplot.figure()
 	canvas_data = create_figure_canvas(visual_group, figure)
 	canvas_data.draw()
-	canvas_data.get_tk_widget().pack(side="left", fill="both")
+	canvas_data.get_tk_widget().pack(side="top", fill="x")
 
 	return window, variables, figure

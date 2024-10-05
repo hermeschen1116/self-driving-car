@@ -11,10 +11,16 @@ def get_in_out_features(dataset) -> Tuple[int, int]:
 	return data_size, label_size
 
 
-def train(dataset, model, loss_function, variables):
+def train(dataset, model, loss_function, variables) -> float:
 	label_true: list = dataset.get_column("label").to_list()
-	for i in range(variables["num_epochs"].get()):
+	accuracy: float = 0
+	current_epochs: int = 0
+
+	while True:
+		if current_epochs == variables["num_epochs"].get():
+			break
 		label_predicted: list = []
+		all_loss: list = []
 		for row in dataset.iter_slices(4):
 			data, one_hot_label = row["data"].to_numpy(), row["one_hot_label"].to_numpy()
 
@@ -22,17 +28,21 @@ def train(dataset, model, loss_function, variables):
 			label_predicted += output.argmax(-1).tolist()
 
 			loss: float = loss_function(output, one_hot_label)
-			print(f"epchs{i}, loss: {loss}")
+			all_loss.append(loss)
+
 			model.optimize(loss_function.gradient)
 
-		accuracy: float = accuracy_score(label_true, label_predicted)
-		variables["train_accuracy"].set(accuracy)
+		current_epochs += 1
+		print(f"epchs{current_epochs}, loss: {sum(all_loss)/ len(all_loss)}")
+		accuracy = accuracy_score(label_true, label_predicted)
 
-		if variables["optimize_target"].get() == "accuracy" and accuracy >= variables["train_accuracy"]:
+		if (variables["optimize_target"].get() == "accuracy") and (accuracy >= variables["target_accuracy"].get()):
 			break
 
+	return accuracy
 
-def evaluate(dataset, model, variables):
+
+def evaluate(dataset, model, variables) -> float:
 	label_true: list = dataset.get_column("label").to_list()
 	label_predicted: list = []
 	for row in dataset.iter_slices(4):
@@ -41,5 +51,4 @@ def evaluate(dataset, model, variables):
 		output = model(data)
 		label_predicted += output.argmax(-1).tolist()
 
-	accuracy: float = accuracy_score(label_true, label_predicted)
-	variables["test_accuracy"].set(accuracy)
+	return accuracy_score(label_true, label_predicted)
