@@ -62,7 +62,7 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 		test_accuracy: float = evaluate(test_dataset, model, variables)
 
 		result_message: str = f"""
-							   Train Epochs: {current_epoch}
+							   Train Epochs: {current_epoch + 1}
 							   Train Accuracy: {train_accuracy}
 							   Test Accuracy: {test_accuracy}
 							   Weight:
