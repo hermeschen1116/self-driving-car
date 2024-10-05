@@ -11,14 +11,12 @@ def get_in_out_features(dataset) -> Tuple[int, int]:
 	return data_size, label_size
 
 
-def train(dataset, model, loss_function, variables) -> float:
+def train(dataset, model, loss_function, variables) -> (int, float):
 	label_true: list = dataset.get_column("label").to_list()
 	accuracy: float = 0
 	current_epochs: int = 0
 
 	while True:
-		if current_epochs == variables["num_epochs"].get():
-			break
 		label_predicted: list = []
 		all_loss: list = []
 		for row in dataset.iter_slices(4):
@@ -36,10 +34,12 @@ def train(dataset, model, loss_function, variables) -> float:
 		print(f"epchs{current_epochs}, loss: {sum(all_loss)/ len(all_loss)}")
 		accuracy = accuracy_score(label_true, label_predicted)
 
-		if (variables["optimize_target"].get() == "accuracy") and (accuracy >= variables["target_accuracy"].get()):
+		if ((current_epochs + 1) == variables["num_epochs"].get()) or (
+			(variables["optimize_target"].get() == "accuracy") and (accuracy >= variables["target_accuracy"].get())
+		):
 			break
 
-	return accuracy
+	return current_epochs, accuracy
 
 
 def evaluate(dataset, model, variables) -> float:

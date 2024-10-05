@@ -58,10 +58,11 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 		model = Perceptron(in_feature, out_feature, variables["learning_rate"].get())
 		loss_function = MeanSquareError()
 
-		train_accuracy: float = train(train_dataset, model, loss_function, variables)
+		current_epoch, train_accuracy = train(train_dataset, model, loss_function, variables)
 		test_accuracy: float = evaluate(test_dataset, model, variables)
 
 		result_message: str = f"""
+							   Train Epochs: {current_epoch}
 							   Train Accuracy: {train_accuracy}
 							   Test Accuracy: {test_accuracy}
 							   Weight:
