@@ -18,7 +18,7 @@ class Perceptron(Module):
 	) -> None:
 		super(Perceptron, self).__init__()
 
-		hidden_layer_features: int = random.choice([i for i in range(*sorted([input_features, output_features]))])
+		hidden_layer_features: int = int((input_features + output_features) / 2)
 
 		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
 		self.activation0 = ReLU()
