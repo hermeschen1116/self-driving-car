@@ -30,7 +30,7 @@ def label_regularization(dataset: polars.DataFrame) -> polars.DataFrame:
 
 def add_one_hot_label(dataset: polars.DataFrame) -> polars.DataFrame:
 	labels: list = dataset.get_column("label").unique().to_list()
-	one_hot_labels: list = numpy.eye(len(labels)).tolist()
+	one_hot_labels: list = [numpy.array(label) for label in numpy.eye(len(labels)).tolist()]
 	one_hot_labels_map: dict = dict(zip(labels, one_hot_labels))
 
 	dataset = dataset.with_columns(polars.col("label").replace_strict(one_hot_labels_map).alias("one_hot_label"))

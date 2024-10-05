@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 
 def get_in_out_features(dataset) -> Tuple[int, int]:
 	data_size: int = numpy.array(dataset[0]["data"]).shape[1]
-	label_size: int = int(numpy.ceil(numpy.log2(len(dataset.get_column("label").unique().to_list()))))
+	label_size: int = len(dataset.get_column("label").unique().to_list())
 
 	return data_size, label_size
 
