@@ -14,7 +14,7 @@ def read_file(source: Union[str, os.PathLike]) -> List[Dict[str, Any]]:
 	with open(source, "r", encoding="utf-8") as file:
 		for line in file.readlines():
 			values: list = list(line.strip().split(" "))
-			raw_dataset.append({"data": [float(value) for value in values[:-1]], "label": int(values[-1])})
+			raw_dataset.append({"data": [float(eval(value)) for value in values[:-1]], "label": int(eval(values[-1]))})
 
 	return raw_dataset
 
