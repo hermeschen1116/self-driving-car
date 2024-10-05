@@ -21,7 +21,8 @@ def train(dataset, model, loss_function, variables):
 			output = model(data)
 			label_predicted += output.argmax(-1).tolist()
 
-			loss_function(output, one_hot_label)
+			loss: float = loss_function(output, one_hot_label)
+			print(f"epchs{i}, loss: {loss}")
 			model.optimize(loss_function.gradient)
 
 		accuracy: float = accuracy_score(label_true, label_predicted)
