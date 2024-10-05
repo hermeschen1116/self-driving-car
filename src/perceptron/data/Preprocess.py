@@ -19,7 +19,7 @@ def read_file(source: Union[str, os.PathLike]) -> List[Dict[str, Any]]:
 	return raw_dataset
 
 
-def label_regularization(dataset):
+def label_regularization(dataset: polars.DataFrame) -> polars.DataFrame:
 	old_labels: list = dataset.get_column("label").unique().to_list()
 	new_labels_map: dict = {label: i for i, label in enumerate(old_labels)}
 
@@ -28,12 +28,9 @@ def label_regularization(dataset):
 	return dataset
 
 
-def add_one_hot_label(dataset):
+def add_one_hot_label(dataset: polars.DataFrame) -> polars.DataFrame:
 	labels: list = dataset.get_column("label").unique().to_list()
-	label_size: int = int(numpy.ceil(numpy.log2(len(labels))))
-	one_hot_labels: list = [
-		numpy.array(list(numpy.binary_repr(label).zfill(label_size)), dtype=numpy.float32) for label in labels
-	]
+	one_hot_labels: list = numpy.eye(len(labels)).tolist()
 	one_hot_labels_map: dict = dict(zip(labels, one_hot_labels))
 
 	dataset = dataset.with_columns(polars.col("label").replace_strict(one_hot_labels_map).alias("one_hot_label"))
@@ -41,7 +38,7 @@ def add_one_hot_label(dataset):
 	return dataset
 
 
-def create_dataset(raw_dataset: List[Dict[str, Any]]):
+def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.DataFrame:
 	data: list = [numpy.array(row["data"]) for row in raw_dataset]
 	label: list = [row["label"] for row in raw_dataset]
 
