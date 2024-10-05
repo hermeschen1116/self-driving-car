@@ -23,8 +23,8 @@ def create_app() -> Tuple[tkinter.Tk, Dict[str, tkinter.Variable], Figure]:
 
 	variables: dict = {
 		"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.05),
-		"num_epochs": tkinter.IntVar(name="num_epochs", value=1),
-		"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
+		"num_epochs": tkinter.IntVar(name="num_epochs", value=10),
+		"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.5),
 		"optimize_target": tkinter.StringVar(name="optimize_target", value="epoch"),
 	}
 
