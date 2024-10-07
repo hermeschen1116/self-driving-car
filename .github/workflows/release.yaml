@@ -29,5 +29,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/perceptron.exe
-          asset_name: ${{ github.head }}
-          tag: ${{ github.head }}
+          asset_name: ${{ github.heads }}
+          tag: ${{ github.heads }}
