@@ -26,10 +26,6 @@ def get_points_groups(dataset: polars.DataFrame, predictions: List[int]) -> List
 	return groups
 
 
-def random_color_hex() -> str:
-	return f"#{("%06x" % random.randint(0, 0xF00000)).upper()}"
-
-
 def generate_point_group_color(num_group: int) -> List[str]:
 	color_candidates: list = ["#FCBA03", "#FC1C03", "#FC7703", "#24FC03", "#03C2FC", "#7703FC", "#FC03C2"]
 	random.shuffle(color_candidates)

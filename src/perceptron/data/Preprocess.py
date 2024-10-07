@@ -54,7 +54,7 @@ def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.DataFrame:
 	return dataset
 
 
-def create_split(dataset: polars.DataFrame, split: List[float]) -> Union[polars.DataFrame, Dict[str, polars.DataFrame]]:
+def create_split(dataset: polars.DataFrame, split: List[float]) -> Dict[str, polars.DataFrame]:
 	if sum(split) != 1:
 		raise ValueError("Summation of split should be 1")
 
@@ -65,8 +65,6 @@ def create_split(dataset: polars.DataFrame, split: List[float]) -> Union[polars.
 	dataset_size: int = len(shuffled_dataset)
 
 	match len(split):
-		case 1:
-			return shuffled_dataset
 		case 2:
 			num_row_train_split: int = int(dataset_size * split[0])
 
@@ -86,4 +84,4 @@ def create_split(dataset: polars.DataFrame, split: List[float]) -> Union[polars.
 
 			return {"train": train_dataset, "validation": validation_dataset, "test": test_dataset}
 		case _:
-			raise ValueError("length of split should be in [1, 3].")
+			raise ValueError("length of split should be in [2, 3].")

@@ -1,4 +1,3 @@
-from typing import Optional
 
 import numpy
 
@@ -10,7 +9,7 @@ class Linear(Module):
 		self,
 		input_features: int,
 		output_features: int,
-		dtype: Optional[type] = numpy.float32,
+		dtype: type = numpy.float32,
 	) -> None:
 		super(Linear, self).__init__()
 		self.weights: numpy.ndarray = numpy.random.rand(input_features, output_features)
@@ -19,7 +18,7 @@ class Linear(Module):
 		self.dtype: type = dtype
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		self.__gradient: numpy.ndarray = numpy.empty(0)
+		self.__gradient = numpy.empty(0)
 
 		return x.dot(self.weights) + self.bias
 

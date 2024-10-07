@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 
 def create_named_textbox(
-	group: Optional[Union[tkinter.Frame, tkinter.LabelFrame]], name: str, variable
+	group: Optional[Union[tkinter.Frame, tkinter.LabelFrame]], name: str, variable: tkinter.Variable
 ) -> tkinter.LabelFrame:
 	frame = tkinter.LabelFrame(group, text=name, padx=10, pady=10)
 	textbox = tkinter.Entry(

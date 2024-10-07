@@ -4,9 +4,11 @@ from typing import Dict, List, Tuple
 import numpy
 import polars
 from matplotlib.axes import Axes
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.metrics import accuracy_score
 
 from perceptron.data.Visualize import draw_points, get_points_groups
+from perceptron.Model import Perceptron
 
 
 def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
@@ -17,7 +19,12 @@ def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 
 
 def train(
-	dataset: polars.DataFrame, model, loss_function, ax: Axes, canvas, variables: Dict[str, tkinter.Variable]
+	dataset: polars.DataFrame,
+	model: Perceptron,
+	loss_function,
+	ax: Axes,
+	canvas: FigureCanvasTkAgg,
+	variables: Dict[str, tkinter.Variable],
 ) -> Tuple[int, float]:
 	label_true: list = dataset.get_column("label").to_list()
 	accuracy: float = 0
@@ -29,7 +36,7 @@ def train(
 		for row in dataset.iter_slices(4):
 			data, one_hot_label = row["data"].to_numpy(), row["one_hot_label"].to_numpy()
 
-			output = model(data)
+			output: numpy.ndarray = model(data)
 			label_predicted += output.argmax(-1).tolist()
 
 			loss: float = loss_function(output, one_hot_label)
@@ -38,7 +45,7 @@ def train(
 			model.optimize(loss_function.gradient)
 
 		print(f"epchs{current_epochs}, loss: {sum(all_loss)/ len(all_loss)}")
-		accuracy = accuracy_score(label_true, label_predicted)
+		accuracy: float = accuracy_score(label_true, label_predicted)
 
 		if ((current_epochs + 1) == variables["num_epochs"].get()) or (
 			(variables["optimize_target"].get() == "accuracy") and (accuracy >= variables["target_accuracy"].get())
@@ -51,7 +58,12 @@ def train(
 
 
 def evaluate(
-	dataset: polars.DataFrame, model, ax: Axes, canvas, colors: List[str], variables: Dict[str, tkinter.Variable]
+	dataset: polars.DataFrame,
+	model: Perceptron,
+	ax: Axes,
+	canvas: FigureCanvasTkAgg,
+	colors: List[str],
+	variables: Dict[str, tkinter.Variable],
 ) -> float:
 	label_true: list = dataset.get_column("label").to_list()
 	label_predicted: list = []

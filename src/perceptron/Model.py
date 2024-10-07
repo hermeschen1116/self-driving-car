@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 import numpy
 
@@ -13,7 +13,7 @@ class Perceptron(Module):
 		input_features: int,
 		output_features: int,
 		learning_rate: float,
-		dtype: Optional[type] = numpy.float32,
+		dtype: type = numpy.float32,
 	) -> None:
 		super(Perceptron, self).__init__()
 

@@ -1,10 +1,11 @@
 import tkinter
-from tkinter import messagebox
+from tkinter import LabelFrame, messagebox
 from tkinter.filedialog import askopenfilename
 
 import polars
 from matplotlib import pyplot
 from matplotlib.axes import Axes
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 from perceptron.data.Preprocess import create_dataset, create_split, read_file
@@ -30,21 +31,25 @@ variables: dict = {
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 control_group.pack(side="right")
 
-textbox_learning_rate = create_named_textbox(control_group, "Learning Rate", variables["learning_rate"])
+textbox_learning_rate: LabelFrame = create_named_textbox(control_group, "Learning Rate", variables["learning_rate"])
 textbox_learning_rate.pack()
 
-textbox_num_epochs = create_named_textbox(control_group, "Number of Epochs (within)", variables["num_epochs"])
+textbox_num_epochs: LabelFrame = create_named_textbox(
+	control_group, "Number of Epochs (within)", variables["num_epochs"]
+)
 textbox_num_epochs.pack()
 
-textbox_target_accuracy = create_named_textbox(control_group, "Target Accuracy", variables["target_accuracy"])
+textbox_target_accuracy: LabelFrame = create_named_textbox(
+	control_group, "Target Accuracy", variables["target_accuracy"]
+)
 textbox_target_accuracy.pack()
 
-menu_optimize_target = create_named_menu(
+menu_optimize_target: LabelFrame = create_named_menu(
 	control_group, "Optimize Target", ["epoch", "accuracy"], variables["optimize_target"]
 )
 menu_optimize_target.pack(fill="x")
 
-visual_group = tkinter.LabelFrame(padx=30, pady=30, border=0)
+visual_group: LabelFrame = tkinter.LabelFrame(padx=30, pady=30, border=0)
 visual_group.pack(side="left", fill="both")
 
 figure0: Figure = pyplot.figure(figsize=(3, 3))
@@ -52,13 +57,13 @@ ax0: Axes = figure0.add_subplot(projection="3d")
 figure1: Figure = pyplot.figure(figsize=(3, 3))
 ax1: Axes = figure1.add_subplot(projection="3d")
 
-canvas_data0 = create_figure_canvas(visual_group, figure0)
+canvas_data0: FigureCanvasTkAgg = create_figure_canvas(visual_group, figure0)
 canvas_data0.get_tk_widget().pack(side="left", fill="x")
-canvas_data1 = create_figure_canvas(visual_group, figure1)
+canvas_data1: FigureCanvasTkAgg = create_figure_canvas(visual_group, figure1)
 canvas_data1.get_tk_widget().pack(side="right", fill="x")
 
 
-def on_button_activate():
+def on_button_activate() -> None:
 	canvas_data0.draw()
 	canvas_data1.draw()
 	file_path: str = askopenfilename()
@@ -99,7 +104,7 @@ Weight:\n{model.show_weights()}
 	ax1.clear()
 
 
-button_train = create_button(control_group, name="Train & Evaluation", function=on_button_activate)
+button_train: LabelFrame = create_button(control_group, name="Train & Evaluation", function=on_button_activate)
 button_train.pack(side="bottom", fill="x")
 
 window.mainloop()

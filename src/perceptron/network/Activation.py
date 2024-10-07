@@ -8,7 +8,7 @@ class ReLU(Module):
 		super(ReLU, self).__init__()
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		self.__gradient: numpy.ndarray = numpy.empty(0)
+		self.__gradient = numpy.empty(0)
 
 		return x * (x >= 0)
 
@@ -21,7 +21,7 @@ class Sigmoid(Module):
 		super(Sigmoid, self).__init__()
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
-		self.__gradient: numpy.ndarray = numpy.empty(0)
+		self.__gradient = numpy.empty(0)
 
 		return 1 / (1 + numpy.exp(x * -1))
 
