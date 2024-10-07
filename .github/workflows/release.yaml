@@ -1,0 +1,20 @@
+name: Release
+on: ["push"]
+jobs:
+  Release:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Build Release
+      	run: uv run pyinstaller -D -F --optimize 2 --hidden-import="PIL._tkinter_finder" --hidden-import="numpy.core.multiarray" -n perceptron src/main.py
