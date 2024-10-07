@@ -62,6 +62,7 @@ def on_button_activate():
 	canvas_data0.draw()
 	canvas_data1.draw()
 	file_path: str = askopenfilename()
+	print(f"file: {file_path}")
 
 	raw_dataset: list = read_file(file_path)
 	dataset: polars.DataFrame = create_dataset(raw_dataset)
@@ -82,17 +83,18 @@ def on_button_activate():
 	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
 	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, variables)
 
-	result_message: str = f"""
-						   Train Epochs: {current_epoch + 1}
-						   Train Accuracy: {round(train_accuracy * 100, 2)}%
-						   Test Accuracy: {round(test_accuracy * 100, 2)}%
-						   Weight:
-						   {model.show_weights()}
-						   """
+	result_message: str = \
+	f"""
+Train Epochs: {current_epoch + 1}
+Train Accuracy: {round(train_accuracy * 100, 2)}%
+Test Accuracy: {round(test_accuracy * 100, 2)}%
+Weight:\n{model.show_weights()}
+	"""
 	if not drawable:
-		result_message = "Data dimension above 3 so it's not drawable\n" + result_message
-
+		result_message = f"Data dimension above 3 so it's not drawable\n{result_message}"
+	print(result_message)
 	messagebox.showinfo(message=result_message)
+
 	ax0.clear()
 	ax1.clear()
 

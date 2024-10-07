@@ -33,15 +33,19 @@ class Perceptron(Module):
 	def weights(self) -> List[numpy.ndarray]:
 		return [self.input_layer.weights.T, self.hidden_layer.weights.T, self.output_layer.weights.T]
 
+	@staticmethod
+	def __show_layer(layer_name: str, layer: numpy.ndarray) -> str:
+		nodes: list = [f"node({layer_name}, {i}): [{", ".join([str(round(w, 5)) for w in node])}]" for i, node in enumerate(layer.T.tolist())]
+
+		return "\n".join(nodes)
+
 	def show_weights(self) -> str:
-		return f"""
-				layer0:
-					{self.input_layer.weights.T}
-				layer1:
-					{self.hidden_layer.weights.T}
-				layer2:
-					{self.output_layer.weights.T}
-				"""
+		return \
+		f"""
+{self.__show_layer("0", self.input_layer.weights)}
+{self.__show_layer("1", self.hidden_layer.weights)}
+{self.__show_layer("2", self.output_layer.weights)}
+		"""
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		x_i: numpy.ndarray = x.astype(self.dtype)
