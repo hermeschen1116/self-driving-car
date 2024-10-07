@@ -21,3 +21,14 @@ jobs:
           chmod +x ./build.sh
           ./build.sh
         shell: bash
+
+      - name: Create Release and Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          body: TODO New Release.
+          draft: false
+          prerelease: false
+          files: |
+              	 ./dist/perceptron
