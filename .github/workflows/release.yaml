@@ -24,11 +24,9 @@ jobs:
           ./build.sh
         shell: bash
 
-      - name: Create Release and Upload Release Asset
-        uses: softprops/action-gh-release@v1
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          tag_name: release
-          name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          files: ./dist/perceptron
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/perceptron
+          tag: ${{ github.ref }}
