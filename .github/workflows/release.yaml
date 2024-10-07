@@ -16,5 +16,5 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
-      - name: Build Release
-      	run: uv run pyinstaller -D -F --optimize 2 --hidden-import="PIL._tkinter_finder" --hidden-import="numpy.core.multiarray" -n perceptron src/main.py
+      - name: Print GITHUB_WORKSPACE
+        run: echo ${GITHUB_WORKSPACE}
