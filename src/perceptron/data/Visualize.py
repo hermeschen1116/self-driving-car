@@ -11,8 +11,9 @@ def get_points_groups(dataset: polars.DataFrame, predictions: List[int]) -> List
 		polars.Series(name="predictions", values=predictions)
 	)
 
-	group_points: list = points.group_by("predictions").agg(polars.col("data")).get_column("data").to_list()
-
+	group_points: list = (
+		points.group_by("predictions", maintain_order=True).agg(polars.col("data")).get_column("data").to_list()
+	)
 	dimension: int = numpy.array(dataset[0]["data"]).shape[1]
 
 	groups: list = []

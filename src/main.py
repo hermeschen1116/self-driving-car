@@ -1,7 +1,9 @@
+import random
 import tkinter
 from tkinter import LabelFrame, messagebox
 from tkinter.filedialog import askopenfilename
 
+import numpy
 import polars
 from matplotlib import pyplot
 from matplotlib.axes import Axes
@@ -18,6 +20,9 @@ from perceptron.ui.Canvas import create_figure_canvas
 from perceptron.ui.Menu import create_named_menu
 from perceptron.ui.TextBox import create_named_textbox
 from perceptron.ui.Window import create_window
+
+random.seed(37710)
+numpy.random.seed(37710)
 
 window: tkinter.Tk = create_window("Perceptron", "")
 

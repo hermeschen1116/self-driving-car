@@ -1,4 +1,3 @@
-
 import numpy
 
 from perceptron.network import Module
