@@ -35,13 +35,15 @@ class Perceptron(Module):
 
 	@staticmethod
 	def __show_layer(layer_name: str, layer: numpy.ndarray) -> str:
-		nodes: list = [f"node({layer_name}, {i}): [{", ".join([str(round(w, 5)) for w in node])}]" for i, node in enumerate(layer.T.tolist())]
+		nodes: list = [
+			f"node({layer_name}, {i}): [{", ".join([str(round(w, 5)) for w in node])}]"
+			for i, node in enumerate(layer.T.tolist())
+		]
 
 		return "\n".join(nodes)
 
 	def show_weights(self) -> str:
-		return \
-		f"""
+		return f"""
 {self.__show_layer("0", self.input_layer.weights)}
 {self.__show_layer("1", self.hidden_layer.weights)}
 {self.__show_layer("2", self.output_layer.weights)}

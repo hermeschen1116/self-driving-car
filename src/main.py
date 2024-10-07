@@ -83,8 +83,7 @@ def on_button_activate():
 	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
 	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, variables)
 
-	result_message: str = \
-	f"""
+	result_message: str = f"""
 Train Epochs: {current_epoch + 1}
 Train Accuracy: {round(train_accuracy * 100, 2)}%
 Test Accuracy: {round(test_accuracy * 100, 2)}%
