@@ -27,4 +27,5 @@ jobs:
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          files: ./dist/perceptron
+        	tag_name: ${{ github.ref }}
+         	files: ./dist/perceptron
