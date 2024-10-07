@@ -31,29 +31,24 @@ def random_color_hex() -> str:
 
 
 def generate_point_group_color(num_group: int) -> List[str]:
-	colors: list = []
-	while True:
-		if len(colors) == num_group:
-			break
+	color_candidates: list = ["#FCBA03", "#FC1C03", "#FC7703", "#24FC03", "#03C2FC", "#7703FC", "#FC03C2"]
+	random.shuffle(color_candidates)
 
-		color: str = random_color_hex()
-		if (color not in colors) and (colors != "#4287f5"):
-			colors.append(color)
-
-	return colors
+	return color_candidates[:num_group]
 
 
-def draw_points(ax: Axes, group_points: List[List[List[float]]]) -> bool:
+def draw_points(ax: Axes, group_points: List[List[List[float]]], colors: List[str]) -> bool:
 	dimension: int = len(group_points[0])
-	colors: list = generate_point_group_color(len(group_points))
 
 	match dimension:
 		case 2:
 			for i, group in enumerate(group_points):
-				ax.scatter(group[0], group[1], c=colors[i], marker="*")
+				ax.scatter(group[0], group[1], c=colors[i], marker="*", label=f"class{i}")
+			ax.legend()
 		case 3:
 			for i, group in enumerate(group_points):
-				ax.scatter(group[0], group[1], group[2], c=colors[i], marker="*")
+				ax.scatter(group[0], group[1], group[2], c=colors[i], marker="*", label=f"class{i}")
+			ax.legend()
 		case _:
 			return False
 

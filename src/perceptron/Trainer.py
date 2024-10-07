@@ -1,5 +1,5 @@
 import tkinter
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import numpy
 import polars
@@ -50,18 +50,20 @@ def train(
 	return current_epochs, accuracy
 
 
-def evaluate(dataset: polars.DataFrame, model, ax: Axes, canvas, variables: Dict[str, tkinter.Variable]) -> float:
+def evaluate(
+	dataset: polars.DataFrame, model, ax: Axes, canvas, colors: List[str], variables: Dict[str, tkinter.Variable]
+) -> float:
 	label_true: list = dataset.get_column("label").to_list()
 	label_predicted: list = []
 
 	for row in dataset.iter_slices(4):
 		data = row["data"].to_numpy()
 
-		output = model(data)
+		output: numpy.ndarray = model(data)
 		label_predicted += output.argmax(-1).tolist()
 
 	group_points: list = get_points_groups(dataset, label_predicted)
-	draw_points(ax, group_points)
+	draw_points(ax, group_points, colors)
 	canvas.draw()
 
 	return accuracy_score(label_true, label_predicted)

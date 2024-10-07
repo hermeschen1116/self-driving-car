@@ -8,7 +8,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 from perceptron.data.Preprocess import create_dataset, create_split, read_file
-from perceptron.data.Visualize import draw_points, get_points_groups
+from perceptron.data.Visualize import draw_points, generate_point_group_color, get_points_groups
 from perceptron.Model import Perceptron
 from perceptron.network.LossFunction import MeanSquareError
 from perceptron.Trainer import evaluate, get_in_out_features, train
@@ -72,7 +72,8 @@ def on_button_activate():
 	test_dataset: polars.DataFrame = dataset_splits["test"]
 
 	point_groups: list = get_points_groups(test_dataset, test_dataset.get_column("label").to_list())
-	drawable: bool = draw_points(ax0, point_groups)
+	group_colors: list = generate_point_group_color(len(point_groups))
+	drawable: bool = draw_points(ax0, point_groups, group_colors)
 	canvas_data0.draw()
 
 	in_feature, out_feature = get_in_out_features(dataset)
@@ -81,7 +82,7 @@ def on_button_activate():
 	loss_function = MeanSquareError()
 
 	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
-	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, variables)
+	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, group_colors, variables)
 
 	result_message: str = f"""
 Train Epochs: {current_epoch + 1}
