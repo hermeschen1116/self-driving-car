@@ -5,7 +5,7 @@ import numpy
 import polars
 from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
 from perceptron.data.Visualize import draw_points, get_points_groups
 from perceptron.Model import Perceptron
@@ -77,5 +77,7 @@ def evaluate(
 	group_points: list = get_points_groups(dataset, label_predicted)
 	draw_points(ax, group_points, colors)
 	canvas.draw()
+
+	print(classification_report(label_true, label_predicted))
 
 	return accuracy_score(label_true, label_predicted)
