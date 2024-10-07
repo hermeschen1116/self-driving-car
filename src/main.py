@@ -40,12 +40,12 @@ textbox_learning_rate: LabelFrame = create_named_textbox(control_group, "Learnin
 textbox_learning_rate.pack()
 
 textbox_num_epochs: LabelFrame = create_named_textbox(
-	control_group, "Number of Epochs (within)", variables["num_epochs"]
+	control_group, "Maximum Number of Epochs", variables["num_epochs"]
 )
 textbox_num_epochs.pack()
 
 textbox_target_accuracy: LabelFrame = create_named_textbox(
-	control_group, "Target Accuracy", variables["target_accuracy"]
+	control_group, "Target Train Accuracy", variables["target_accuracy"]
 )
 textbox_target_accuracy.pack()
 
