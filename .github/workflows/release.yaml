@@ -33,5 +33,4 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/perceptron-windows.exe
-          asset_name: ${{ github.ref }}
           tag: ${{ github.ref }}
