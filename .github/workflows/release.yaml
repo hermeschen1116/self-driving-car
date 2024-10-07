@@ -16,5 +16,8 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
-      - name: Print GITHUB_WORKSPACE
-        run: echo ${GITHUB_WORKSPACE}
+      - name: Run script file
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
+        shell: zsh
