@@ -1,5 +1,7 @@
 name: Release
 on: ["push"]
+permissions:
+  contents: write
 jobs:
   Release:
     runs-on: windows-latest
@@ -25,9 +27,4 @@ jobs:
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
-          body: TODO New Release.
-          draft: false
-          prerelease: false
           files: ./dist/perceptron
