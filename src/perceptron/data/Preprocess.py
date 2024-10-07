@@ -58,6 +58,9 @@ def create_split(dataset: polars.DataFrame, split: List[float]) -> Union[polars.
 	if sum(split) != 1:
 		raise ValueError("Summation of split should be 1")
 
+	if len(dataset) <= 4:
+		return {"train": dataset, "test": dataset}
+
 	shuffled_dataset: polars.DataFrame = dataset.sample(fraction=1, shuffle=True)
 	dataset_size: int = len(shuffled_dataset)
 
