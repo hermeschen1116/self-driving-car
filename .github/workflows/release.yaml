@@ -30,5 +30,4 @@ jobs:
           body: TODO New Release.
           draft: false
           prerelease: false
-          files: |
-              	 ./dist/perceptron
+          files: ./dist/perceptron
