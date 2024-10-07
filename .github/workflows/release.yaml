@@ -34,3 +34,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/perceptron-windows.exe
           tag: ${{ github.ref }}
+          overwrite: true
