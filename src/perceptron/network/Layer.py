@@ -11,9 +11,16 @@ class Linear(Module):
 		dtype: type = numpy.float32,
 	) -> None:
 		super(Linear, self).__init__()
-		self.weights: numpy.ndarray = numpy.random.rand(input_features + 1, output_features)
+
+		self.weights: numpy.ndarray = self.__initialize_weights(input_features + 1, output_features)
 
 		self.dtype: type = dtype
+
+	@staticmethod
+	def __initialize_weights(input_features: int, output_features: int) -> numpy.ndarray:
+		weight_limit: float = numpy.sqrt(1 / input_features).item()
+
+		return numpy.random.uniform(-1 * weight_limit, weight_limit, (input_features + 1, output_features))
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient = numpy.empty(0)
