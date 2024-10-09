@@ -19,7 +19,7 @@ class Linear(Module):
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient = numpy.empty(0)
 
-		return x.dot(self.weights) + self.bias
+		return x.dot(self.weights) - self.bias
 
 	def backward(self, x: numpy.ndarray) -> numpy.ndarray:
 		return x
