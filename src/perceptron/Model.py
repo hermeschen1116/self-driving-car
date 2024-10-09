@@ -68,8 +68,8 @@ class Perceptron(Module):
 		local_gradient: numpy.ndarray = loss_gradient * self.activation2.gradient
 		layer_gradient: numpy.ndarray = self.output_layer.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = local_gradient.dot(layer_gradient.T) * self.activation1.gradient
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.activation1.gradient
 		layer_gradient = self.hidden_layer.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = local_gradient.dot(layer_gradient.T) * self.activation0.gradient
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.activation0.gradient
 		self.input_layer.optimize(self.learning_rate * local_gradient)
