@@ -20,7 +20,7 @@ class Linear(Module):
 	def __initialize_weights(input_features: int, output_features: int) -> numpy.ndarray:
 		weight_limit: float = numpy.sqrt(1 / input_features).item()
 
-		return numpy.random.uniform(-1 * weight_limit, weight_limit, (input_features + 1, output_features))
+		return numpy.random.uniform(-1 * weight_limit, weight_limit, (input_features, output_features))
 
 	def forward(self, x: numpy.ndarray) -> numpy.ndarray:
 		self.__gradient = numpy.empty(0)
