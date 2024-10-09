@@ -28,9 +28,9 @@ window: tkinter.Tk = create_window("Perceptron", "")
 
 variables: dict = {
 	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
-	"num_epochs": tkinter.IntVar(name="num_epochs", value=15),
+	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 	"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
-	"optimize_target": tkinter.StringVar(name="optimize_target", value="accuracy"),
+	"optimize_target": tkinter.StringVar(name="optimize_target", value="epoch"),
 }
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
