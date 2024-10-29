@@ -32,6 +32,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/perceptron-windows.exe
+          file: dist/SelfDrivingCar-windows.exe
           tag: ${{ github.ref }}
           overwrite: true
