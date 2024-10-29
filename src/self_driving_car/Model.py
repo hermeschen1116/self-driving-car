@@ -2,18 +2,14 @@ from typing import List
 
 import numpy
 
-from perceptron.network import Module
-from perceptron.network.Activation import ReLU, Sigmoid
-from perceptron.network.Layer import Linear
+from self_driving_car.network import Module
+from self_driving_car.network.Activation import ReLU, Sigmoid
+from self_driving_car.network.Layer import Linear
 
 
 class Perceptron(Module):
 	def __init__(
-		self,
-		input_features: int,
-		output_features: int,
-		learning_rate: float,
-		dtype: type = numpy.float32,
+		self, input_features: int, output_features: int, learning_rate: float, dtype: type = numpy.float32
 	) -> None:
 		super(Perceptron, self).__init__()
 
@@ -36,7 +32,7 @@ class Perceptron(Module):
 	@staticmethod
 	def __show_layer(layer_name: str, layer: numpy.ndarray) -> str:
 		nodes: list = [
-			f"node({layer_name}, {i}): [{", ".join([str(round(w, 5)) for w in node])}]"
+			f"node({layer_name}, {i}): [{', '.join([str(round(w, 5)) for w in node])}]"
 			for i, node in enumerate(layer.T.tolist())
 		]
 

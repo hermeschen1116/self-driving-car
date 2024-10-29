@@ -7,8 +7,8 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.metrics import accuracy_score, classification_report
 
-from perceptron.data.Visualize import draw_points, get_points_groups
-from perceptron.Model import Perceptron
+from self_driving_car.Model import Perceptron
+from self_driving_car.data.Visualize import draw_points, get_points_groups
 
 
 def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
@@ -44,7 +44,7 @@ def train(
 
 			model.optimize(loss_function.gradient)
 
-		print(f"epchs{current_epochs}, loss: {sum(all_loss)/ len(all_loss)}")
+		print(f"epchs{current_epochs}, loss: {sum(all_loss) / len(all_loss)}")
 		accuracy: float = accuracy_score(label_true, label_predicted)
 
 		if ((current_epochs + 1) == variables["num_epochs"].get()) or (

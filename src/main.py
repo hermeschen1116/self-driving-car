@@ -10,16 +10,16 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-from perceptron.data.Preprocess import create_dataset, create_split, read_file
-from perceptron.data.Visualize import draw_points, generate_point_group_color, get_points_groups
-from perceptron.Model import Perceptron
-from perceptron.network.LossFunction import MeanSquareError
-from perceptron.Trainer import evaluate, get_in_out_features, train
-from perceptron.ui.Button import create_button
-from perceptron.ui.Canvas import create_figure_canvas
-from perceptron.ui.Menu import create_named_menu
-from perceptron.ui.TextBox import create_named_textbox
-from perceptron.ui.Window import create_window
+from self_driving_car.Model import Perceptron
+from self_driving_car.Trainer import evaluate, get_in_out_features, train
+from self_driving_car.data.Preprocess import create_dataset, create_split, read_file
+from self_driving_car.data.Visualize import draw_points, generate_point_group_color, get_points_groups
+from self_driving_car.network.LossFunction import MeanSquareError
+from self_driving_car.ui.Button import create_button
+from self_driving_car.ui.Canvas import create_figure_canvas
+from self_driving_car.ui.Menu import create_named_menu
+from self_driving_car.ui.TextBox import create_named_textbox
+from self_driving_car.ui.Window import create_window
 
 random.seed(37710)
 numpy.random.seed(37710)

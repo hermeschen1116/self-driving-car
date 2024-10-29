@@ -24,7 +24,7 @@ jobs:
           -D -F --optimize 2 \
           --hidden-import="PIL._tkinter_finder" \
           --hidden-import="numpy.core.multiarray" \
-          -n perceptron-windows \
+          -n SelfDrivingCar-windows \
           src/main.py
         shell: bash
 

@@ -1,7 +1,7 @@
 [project]
-name = "perceptron"
+name = "self-driving-car"
 version = "0.1.0"
-description = "Self implementation of perceptron using Numpy"
+description = "Build a self Driving algorithm by self implementation of perceptron using Numpy"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,17 +12,13 @@ dependencies = [
 	"tk>=0.1.0",
 ]
 
-[tool.uv]
-dev-dependencies = ["pyinstaller>=6.10.0"]
-
-[tool.ruff]
-line-length = 120
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "tab"
-docstring-code-format = true
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "commitizen>=3.30.0",
+    "pre-commit>=4.0.1",
+    "pyinstaller>=6.10.0",
+]

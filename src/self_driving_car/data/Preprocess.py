@@ -43,9 +43,7 @@ def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.DataFrame:
 	label: list = [row["label"] for row in raw_dataset]
 
 	dataset: polars.DataFrame = polars.DataFrame(
-		{"data": data, "label": label},
-		schema={"data": polars.Array, "label": polars.Int64},
-		orient="col",
+		{"data": data, "label": label}, schema={"data": polars.Array, "label": polars.Int64}, orient="col"
 	)
 
 	dataset = label_regularization(dataset)

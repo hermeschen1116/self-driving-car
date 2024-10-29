@@ -1,15 +1,10 @@
 import numpy
 
-from perceptron.network import Module
+from self_driving_car.network import Module
 
 
 class Linear(Module):
-	def __init__(
-		self,
-		input_features: int,
-		output_features: int,
-		dtype: type = numpy.float32,
-	) -> None:
+	def __init__(self, input_features: int, output_features: int, dtype: type = numpy.float32) -> None:
 		super(Linear, self).__init__()
 
 		self.weights: numpy.ndarray = self.__initialize_weights(input_features, output_features)

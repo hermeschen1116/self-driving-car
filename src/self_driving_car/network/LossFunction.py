@@ -1,6 +1,6 @@
 import numpy
 
-from perceptron.network import Module
+from self_driving_car.network import Module
 
 
 class MeanSquareError(Module):
