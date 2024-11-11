@@ -7,7 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.metrics import accuracy_score, classification_report
 
-from self_driving_car.Model import Perceptron
+from self_driving_car.Model import SelfDrivingCar
 from self_driving_car.data.Visualize import draw_points, get_points_groups
 
 
@@ -20,7 +20,7 @@ def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 
 def train(
 	dataset: polars.DataFrame,
-	model: Perceptron,
+	model: SelfDrivingCar,
 	loss_function,
 	ax: Axes,
 	canvas: FigureCanvasTkAgg,
@@ -59,7 +59,7 @@ def train(
 
 def evaluate(
 	dataset: polars.DataFrame,
-	model: Perceptron,
+	model: SelfDrivingCar,
 	ax: Axes,
 	canvas: FigureCanvasTkAgg,
 	colors: List[str],
