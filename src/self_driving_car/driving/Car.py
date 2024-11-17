@@ -1,5 +1,5 @@
 import math
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy
 
@@ -61,20 +61,25 @@ class Car:
 		self.__sensor["right"].base_point = self.__position
 		self.__sensor["right"].angle = math.radians(self.__car_angle.degree - 45)
 
-	def sensor(self, playground: Playgroud) -> Tuple[float, float, float]:
-		left_distance: List[float] = []
-		front_distance: List[float] = []
-		right_distance: List[float] = []
+	def check_distance(self, playground: Playgroud) -> Optional[Tuple[float, float, float]]:
+		left_distances: List[float] = []
+		front_distances: List[float] = []
+		right_distances: List[float] = []
 
 		for line in playground.lines:
 			left_intersect = line.intersect_with_radial(self.__sensor["left"])
 			if left_intersect is not None:
-				left_distance.append(self.__position.distance_to(left_intersect))
+				left_distances.append(self.__position.distance_to(left_intersect))
 			front_intersect = line.intersect_with_radial(self.__sensor["front"])
 			if front_intersect is not None:
-				left_distance.append(self.__position.distance_to(front_intersect))
+				left_distances.append(self.__position.distance_to(front_intersect))
 			right_intersect = line.intersect_with_radial(self.__sensor["right"])
 			if right_intersect is not None:
-				right_distance.append(self.__position.distance_to(right_intersect))
+				right_distances.append(self.__position.distance_to(right_intersect))
 
-		return min(left_distance), min(front_distance), min(right_distance)
+		distances: Tuple[float, float, float] = (min(left_distances), min(front_distances), min(right_distances))
+
+		if any([distance < self.__radius for distance in distances]):
+			return None
+
+		return distances
