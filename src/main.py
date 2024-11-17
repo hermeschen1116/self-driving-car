@@ -10,7 +10,7 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-from self_driving_car.Model import SelfDrivingCar
+from self_driving_car.Model import CarController
 from self_driving_car.Trainer import evaluate, get_in_out_features, train
 from self_driving_car.data.Preprocess import create_dataset, create_split, read_file
 from self_driving_car.data.Visualize import draw_points, generate_point_group_color, get_points_groups
@@ -67,6 +67,8 @@ canvas_data0.get_tk_widget().pack(side="left", fill="x")
 canvas_data1: FigureCanvasTkAgg = create_figure_canvas(visual_group, figure1)
 canvas_data1.get_tk_widget().pack(side="right", fill="x")
 
+# def
+
 
 def on_button_activate() -> None:
 	canvas_data0.draw()
@@ -88,7 +90,7 @@ def on_button_activate() -> None:
 
 	in_feature, out_feature = get_in_out_features(dataset)
 
-	model = SelfDrivingCar(in_feature, out_feature, variables["learning_rate"].get())
+	model = CarController(in_feature, out_feature, variables["learning_rate"].get())
 	loss_function = MeanSquareError()
 
 	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
