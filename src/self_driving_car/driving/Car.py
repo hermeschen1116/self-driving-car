@@ -83,3 +83,6 @@ class Car:
 			return None
 
 		return distances
+
+	def check_goal(self, playground: Playgroud) -> bool:
+		return playground.goal.distance_to_point(self.__position) <= self.__radius

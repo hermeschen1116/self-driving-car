@@ -143,6 +143,15 @@ class VerticalLineSegment:
 
 		return intersect_point
 
+	def distance_to_point(self, point: Point) -> float:
+		if point.y < self.y_min:
+			return point.distance_to(Point(numpy.array([self.x, self.y_min])))
+
+		if point.y > self.y_max:
+			return point.distance_to(Point(numpy.array([self.x, self.y_max])))
+
+		return abs(point.x - self.x)
+
 
 class HorizontalLineSegment:
 	def __init__(self, endpoints: List[Point]) -> None:
@@ -174,6 +183,15 @@ class HorizontalLineSegment:
 			return None
 
 		return intersect_point
+
+	def distance_to_point(self, point: Point) -> float:
+		if point.x < self.x_min:
+			return point.distance_to(Point(numpy.array([self.x_min, self.y])))
+
+		if point.x > self.x_max:
+			return point.distance_to(Point(numpy.array([self.x_max, self.y])))
+
+		return abs(point.y - self.y)
 
 
 def get_line_segment(point1: Point, point2: Point) -> Optional[Union[VerticalLineSegment, HorizontalLineSegment]]:
