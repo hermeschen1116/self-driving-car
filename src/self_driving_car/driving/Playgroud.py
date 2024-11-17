@@ -1,14 +1,17 @@
-from typing import List, Tuple
+from typing import List, Union
 
-from self_driving_car.car.Car import Car
+from self_driving_car.driving.Geometry import HorizontalLineSegment, Point, VerticalLineSegment, get_line_segment
 
 
 class Playgroud:
-	def __init__(self, points: List[Tuple[int, int]], cars: List[Car]) -> None:
-		if points[0] != points[-1]:
+	def __init__(self, points: List[Point]) -> None:
+		if points[0].coordinate != points[-1].coordinate:
 			raise ValueError("Playgroud: points do not form a closed field.")
 
-		self.points: List[Tuple[int, int]] = points
-		self.cars: List[Car] = cars
+		self.lines: List[Union[HorizontalLineSegment, VerticalLineSegment]] = []
 
-	def
+		num_points: int = len(points)
+		for i in range(num_points):
+			line_segment = get_line_segment(points[i], points[(i + 1) % num_points])
+			if line_segment is not None:
+				self.lines.append(line_segment)

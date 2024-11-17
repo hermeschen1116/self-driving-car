@@ -1,63 +1,80 @@
 import math
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import numpy
 
-
-def get_rotate_matrix(radian: float) -> numpy.ndarray:
-	return numpy.array([[numpy.cos(radian), -numpy.sin(radian)], [numpy.sin(radian), numpy.cos(radian)]])
+from self_driving_car.driving.Geometry import LimitedAngle, Point, Radial
+from self_driving_car.driving.Playgroud import Playgroud
 
 
 class Car:
 	def __init__(
-		self, radius: float = 3, initial_position: List[float] = [0, 0], initial_direction: float = 90
+		self, radius: float = 3, initial_position: numpy.ndarray = numpy.zeros((1, 2)), initial_direction: float = 90
 	) -> None:
 		self.__radius: float = radius
-		self.__handler_rotation_range: Tuple[float, float] = (math.radians(-40), math.radians(40))
-		self.__car_rotation_range: Tuple[float, float] = (math.radians(-90), math.radians(270))
-		self.__position: List[float] = initial_position
-		self.__handler_rotation: float = 0
-		self.__car_rotation: float = math.radians(initial_direction)
+		self.__car_angle: LimitedAngle = LimitedAngle(90, [-90, 270])
+		self.__position: Point = Point(initial_position)
+		self.__sensor: Dict[str, Radial] = {
+			"left": Radial(self.__position, math.radians(self.__car_angle.degree + 45)),
+			"front": Radial(self.__position, self.__car_angle.radian),
+			"right": Radial(self.__position, math.radians(self.__car_angle.degree - 45)),
+		}
+
+	def __call__(self, handler_angle: LimitedAngle, playground: Playgroud) -> None:
+		self.__turn(handler_angle)
+		self.__move(handler_angle)
 
 	@property
 	def car_length(self) -> float:
 		return self.__radius * 2
 
 	@property
-	def car_rotation(self) -> float:
-		return math.degrees(self.__car_rotation)
+	def car_angle(self) -> float:
+		return self.__car_angle.degree
 
-	def __rotate_handler(self, handler_radian: float) -> None:
-		if handler_radian > self.__handler_rotation_range[1]:
-			handler_radian = self.__handler_rotation_range[1]
-
-		if handler_radian < self.__handler_rotation_range[0]:
-			handler_radian = self.__handler_rotation_range[0]
-
-		self.__handler_rotation = handler_radian
-
-	def __turn(self) -> None:
-		new_car_degree: float = (
-			self.__car_rotation - math.asin(math.sin(self.__handler_rotation) * 2 / self.car_length) * math.pi
+	def __turn(self, handler_angle: LimitedAngle) -> None:
+		new_car_degree: float = self.__car_angle.degree - math.degrees(
+			math.asin(math.sin(handler_angle.radian) * 2 / self.car_length)
 		)
 
-		if new_car_degree > self.__car_rotation_range[1]:
-			new_car_degree = self.__car_rotation_range[1]
+		self.__car_angle.degree = new_car_degree
 
-		if new_car_degree < self.__car_rotation_range[0]:
-			new_car_degree = self.__car_rotation_range[0]
+	def __move(self, handler_angle: LimitedAngle) -> None:
+		new_car_coordinate: numpy.ndarray = self.__position.coordinate
 
-		self.__car_rotation = new_car_degree
+		car_radian, handler_radian = self.__car_angle.radian, handler_angle.radian
+		radian_sum: float = car_radian + handler_radian
+		new_car_coordinate[0] = (
+			new_car_coordinate[0] + math.cos(radian_sum) + math.sin(handler_radian) * math.sin(car_radian)
+		)
+		new_car_coordinate[1] = (
+			new_car_coordinate[1] + math.sin(radian_sum) - math.sin(handler_radian) * math.cos(car_radian)
+		)
 
-	def __move(self) -> None:
-		self.__position[0] += math.cos(self.__handler_rotation + self.__car_rotation) + math.sin(
-			self.__handler_rotation
-		) * math.sin(self.__car_rotation)
-		self.__position[1] += math.sin(self.__handler_rotation + self.__car_rotation) - math.sin(
-			self.__handler_rotation
-		) * math.cos(self.__car_rotation)
+		self.__position.coordinate = new_car_coordinate
 
-	def drive(self, handler_degree: float) -> None:
-		self.__rotate_handler(handler_degree)
-		self.__turn()
-		self.__move()
+	def __update_sensors(self) -> None:
+		self.__sensor["left"].base_point = self.__position
+		self.__sensor["left"].angle = math.radians(self.__car_angle.degree + 45)
+		self.__sensor["front"].base_point = self.__position
+		self.__sensor["front"].angle = self.__car_angle.radian
+		self.__sensor["right"].base_point = self.__position
+		self.__sensor["right"].angle = math.radians(self.__car_angle.degree - 45)
+
+	def sensor(self, playground: Playgroud) -> Tuple[float, float, float]:
+		left_distance: List[float] = []
+		front_distance: List[float] = []
+		right_distance: List[float] = []
+
+		for line in playground.lines:
+			left_intersect = line.intersect_with_radial(self.__sensor["left"])
+			if left_intersect is not None:
+				left_distance.append(self.__position.distance_to(left_intersect))
+			front_intersect = line.intersect_with_radial(self.__sensor["front"])
+			if front_intersect is not None:
+				left_distance.append(self.__position.distance_to(front_intersect))
+			right_intersect = line.intersect_with_radial(self.__sensor["right"])
+			if right_intersect is not None:
+				right_distance.append(self.__position.distance_to(right_intersect))
+
+		return min(left_distance), min(front_distance), min(right_distance)
