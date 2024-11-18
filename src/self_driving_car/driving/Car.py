@@ -2,11 +2,11 @@ import math
 from typing import Dict, List, Optional, Tuple
 
 import numpy
+from matplotlib.lines import Line2D
+from matplotlib.patches import Circle
 
 from self_driving_car.driving.Geometry import LimitedAngle, Point, Radial
 from self_driving_car.driving.Playgroud import Playgroud
-from matplotlib.lines import Line2D
-from matplotlib.patches import Circle
 
 
 class Car:
@@ -89,7 +89,7 @@ class Car:
 	def check_goal(self, playground: Playgroud) -> bool:
 		return playground.goal.distance_to_point(self.__position) <= self.__radius
 
-	def draws(self) -> [Circle, Line2D]:
+	def draws(self) -> Tuple[Circle, Line2D]:
 		car: Circle = Circle((self.__position.x, self.__position.y), self.__radius, color="red", fill=False)
 		sensor: Line2D = self.__sensor["front"].draw(color="red")
 
