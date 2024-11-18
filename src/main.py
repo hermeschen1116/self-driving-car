@@ -34,7 +34,7 @@ variables: dict = {
 car, playground = None, None
 trajectory_line = None
 controller = None
-handler_angle = None
+handler_angle = LimitedAngle(0, [0, 0])
 controller_record: List[List[float]] = []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
@@ -188,7 +188,7 @@ Train Accuracy: {round(train_accuracy * 100, 2)}%
 	global handler_angle
 	handler_angle: LimitedAngle = LimitedAngle(0, [-40, 40])
 	global trajectory_line
-	(trajectory_line,) = ax.plot([], [], color="blue", alpha=0.6)
+	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)
 
 	global animation
 	animation = FuncAnimation(fig, update_animation, frames=100, interval=100, repeat=False)
