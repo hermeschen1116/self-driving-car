@@ -16,8 +16,9 @@ class Playgroud:
 		print(goal[0].coordinate, goal[1].coordinate)
 		self.goal: LineSegment = LineSegment(goal[0], goal[1])
 
+		points = points[:-1]
 		num_points: int = len(points)
-		for i in range(num_points - 1):
+		for i in range(num_points):
 			self.edges.append(LineSegment(points[i], points[(i + 1) % num_points]))
 
 	def playground_range(self) -> Tuple[float, float, float, float]:
