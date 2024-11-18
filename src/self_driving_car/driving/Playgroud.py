@@ -17,7 +17,7 @@ class Playgroud:
 		self.goal: LineSegment = LineSegment(goal[0], goal[1])
 
 		num_points: int = len(points)
-		for i in range(num_points):
+		for i in range(num_points - 1):
 			self.edges.append(LineSegment(points[i], points[(i + 1) % num_points]))
 
 	def draw(self) -> List[Line2D]:
