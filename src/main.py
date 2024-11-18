@@ -40,11 +40,10 @@ visual_group.pack(side="left", fill="both")
 
 fig, ax = pyplot.subplots()
 ax.axis("off")
-ax.set_xlim(0, 100)
-ax.set_ylim(0, 100)
 
 canvas_playground: FigureCanvasTkAgg = create_figure_canvas(visual_group, fig)
 canvas_playground.get_tk_widget().pack(side="left", fill="x")
+
 
 def on_button_data_activate():
 	file_path: str = askopenfilename()
@@ -60,8 +59,8 @@ def on_button_data_activate():
 			edge.remove()
 
 	x_min, x_max, y_min, y_max = playgroud.playground_range()
-	ax.set_xlim(x_min, x_max)
-	ax.set_ylim(y_min, y_max)
+	ax.set_xlim(x_min + 10, x_max + 10)
+	ax.set_ylim(y_min + 10, y_max + 10)
 
 	playground_edges = playgroud.draw()
 	for edge in playground_edges:
@@ -72,6 +71,7 @@ def on_button_data_activate():
 	ax.add_line(sensor)
 
 	canvas_playground.draw()
+
 
 # def on_button_train_activate() -> None:
 
