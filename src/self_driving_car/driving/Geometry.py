@@ -2,6 +2,7 @@ import math
 from typing import List, Optional, Union
 
 import numpy
+from matplotlib.lines import Line2D
 
 
 class Angle:
@@ -111,6 +112,13 @@ class Radial:
 
 		return point
 
+	def draw(self, color: str = "red", line_width: int = 2, line_length: float = 4) -> Line2D:
+		unit_slope: numpy.ndarray = self.slope / numpy.linalg.norm(self.slope)
+		end_point: numpy.ndarray = self.__base_point.coordinate + unit_slope * line_length
+		return Line2D(
+			[self.__base_point.x, end_point[0]], [self.__base_point.y, end_point[1]], color=color, linewidth=line_width
+		)
+
 
 class VerticalLineSegment:
 	def __init__(self, endpoints: List[Point]) -> None:
@@ -152,6 +160,9 @@ class VerticalLineSegment:
 
 		return abs(point.x - self.x)
 
+	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
+		return Line2D([self.x, self.x], [self.y_min, self.y_max], color=color, linewidth=line_width)
+
 
 class HorizontalLineSegment:
 	def __init__(self, endpoints: List[Point]) -> None:
@@ -192,6 +203,9 @@ class HorizontalLineSegment:
 			return point.distance_to(Point(numpy.array([self.x_max, self.y])))
 
 		return abs(point.y - self.y)
+
+	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
+		return Line2D([self.x_min, self.x_max], [self.y, self.y], color=color, linewidth=line_width)
 
 
 def get_line_segment(point1: Point, point2: Point) -> Optional[Union[VerticalLineSegment, HorizontalLineSegment]]:

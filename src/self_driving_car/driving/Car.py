@@ -66,7 +66,7 @@ class Car:
 		front_distances: List[float] = []
 		right_distances: List[float] = []
 
-		for line in playground.lines:
+		for line in playground.edges:
 			left_intersect = line.intersect_with_radial(self.__sensor["left"])
 			if left_intersect is not None:
 				left_distances.append(self.__position.distance_to(left_intersect))
