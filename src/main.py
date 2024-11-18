@@ -84,7 +84,7 @@ def on_button_data_activate():
 	ax.add_line(sensor_line)
 
 	ax.set_aspect("equal")
-	ax.autoscale(True)
+	ax.autoscale(True, axis="both", tight=True)
 	ax.margins(0.1)
 
 	canvas_playground.draw()
