@@ -58,10 +58,7 @@ def on_button_data_activate():
 		for edge in playground_edges:
 			edge.remove()
 
-	x_min, x_max, y_min, y_max = playgroud.playground_range()
-	ax.set_xlim(x_min - 10, x_max + 10)
-	ax.set_ylim(y_min - 10, y_max + 10)
-	ax.set_aspect("equal")
+	# x_min, x_max, y_min, y_max = playgroud.playground_range()
 
 	playground_edges = playgroud.draw()
 	for edge in playground_edges:
@@ -70,6 +67,9 @@ def on_button_data_activate():
 	car, sensor = car.draws()
 	ax.add_patch(car)
 	ax.add_line(sensor)
+
+	ax.autoscale(True)  # 啟用自動縮放
+	ax.margins(0.1)
 
 	canvas_playground.draw()
 
