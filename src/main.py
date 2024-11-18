@@ -144,15 +144,16 @@ def update_animation(frame):
 		if result is False:
 			messagebox.showerror("Experiment failed. The car broken.")
 
+	global car
 	if car is None:
 		raise ValueError("Self Driving Car: car object not initialized.")
 	car_circle, sensor_line = car.draws()
 	ax.add_patch(car_circle)
 	ax.add_line(sensor_line)
 
+	global trajectory_line
 	if trajectory_line is None:
 		raise ValueError("Self Driving Car: trajectory_line object not initialized.")
-	global trajectory_line, car
 	trajectory_x, trajectory_y = trajectory_line.get_data()
 	trajectory_line.set_data(
 		trajectory_x.tolist() + [car.car_position[0]], trajectory_y.tolist() + [car.car_position[1]]
