@@ -32,7 +32,7 @@ variables: dict = {
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 }
 car, playground = None, None
-trajectory_line = None
+trajectory_x, trajectory_y, trajectory_line = [], [], []
 controller = None
 handler_angle = LimitedAngle(0, [0, 0])
 controller_record: List[List[float]] = []
@@ -124,7 +124,7 @@ def control_car() -> Optional[bool]:
 	return None
 
 
-def update_animation(frame):
+def update_animation():
 	global car_circle, sensor_line
 	car_circle.remove()
 	sensor_line.remove()
@@ -151,13 +151,10 @@ def update_animation(frame):
 	ax.add_patch(car_circle)
 	ax.add_line(sensor_line)
 
-	global trajectory_line
-	if trajectory_line is None:
-		raise ValueError("Self Driving Car: trajectory_line object not initialized.")
-	trajectory_x, trajectory_y = trajectory_line.get_data()
-	trajectory_line.set_data(
-		trajectory_x.tolist() + [car.car_position[0]], trajectory_y.tolist() + [car.car_position[1]]
-	)
+	global trajectory_x, trajectory_y, trajectory_line
+	for line in trajectory_line:
+		line.remove()
+	trajectory_line = ax.plot(trajectory_x, trajectory_y, color="blue", alpha=0.6)
 
 	canvas_playground.draw()
 
@@ -191,7 +188,7 @@ Train Accuracy: {round(train_accuracy * 100, 2)}%
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)
 
 	global animation
-	animation = FuncAnimation(fig, update_animation, frames=100, interval=100, repeat=False)
+	animation = FuncAnimation(fig, update_animation, interval=100, repeat=False)
 
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
