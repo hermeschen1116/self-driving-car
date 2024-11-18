@@ -113,7 +113,6 @@ def control_car() -> Optional[bool]:
 	if playground is None:
 		raise ValueError("Self Driving Car: playground object not initialized.")
 	handler_angle.radian = angle
-	global car
 	car(handler_angle, playground)
 
 	global controller_record
