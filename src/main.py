@@ -32,7 +32,7 @@ variables: dict = {
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 }
 car, playground = None, None
-trajectory_x, trajectory_y, trajectory_line = [], [], []
+trajectory_x, trajectory_y, trajectory_line = [], [], None
 controller = None
 handler_angle = LimitedAngle(0, [0, 0])
 controller_record: List[List[float]] = []
@@ -124,7 +124,7 @@ def control_car() -> Optional[bool]:
 	return None
 
 
-def update_animation(frame):
+def update_animation():
 	global car_circle, sensor_line
 	car_circle.remove()
 	sensor_line.remove()
@@ -143,6 +143,7 @@ def update_animation(frame):
 			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
 		if result is False:
 			messagebox.showerror("Experiment failed. The car broken.")
+		return
 
 	global car
 	if car is None:
@@ -152,9 +153,11 @@ def update_animation(frame):
 	ax.add_line(sensor_line)
 
 	global trajectory_x, trajectory_y, trajectory_line
-	for line in trajectory_line:
-		line.remove()
-	trajectory_line = ax.plot(trajectory_x, trajectory_y, color="blue", alpha=0.6)
+	if trajectory_line is None:
+		raise ValueError("Self Driving Car: trajectory_line object not initialized.")
+	trajectory_x.append(car.car_position[0])
+	trajectory_y.append(car.car_position[1])
+	trajectory_line.set_data(trajectory_x, trajectory_y)
 
 	canvas_playground.draw()
 
@@ -185,10 +188,10 @@ Train loss: {round(train_loss * 100, 2)}%
 	global handler_angle
 	handler_angle = LimitedAngle(0, [-40, 40])
 	global trajectory_line
-	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)
+	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)[0]
 
 	global animation
-	animation = FuncAnimation(fig, update_animation, frames=1000, interval=100, repeat=False)
+	animation = FuncAnimation(fig, update_animation, interval=100, repeat=False)
 
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
