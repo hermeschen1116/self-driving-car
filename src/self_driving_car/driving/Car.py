@@ -9,11 +9,11 @@ from self_driving_car.driving.Playgroud import Playgroud
 
 class Car:
 	def __init__(
-		self, radius: float = 3, initial_position: numpy.ndarray = numpy.zeros((1, 2)), initial_direction: float = 90
+		self, radius: float = 3, initial_position: Point = Point(numpy.zeros((1, 2))), initial_direction: float = 90
 	) -> None:
 		self.__radius: float = radius
 		self.__car_angle: LimitedAngle = LimitedAngle(90, [-90, 270])
-		self.__position: Point = Point(initial_position)
+		self.__position: Point = initial_position
 		self.__sensor: Dict[str, Radial] = {
 			"left": Radial(self.__position, math.radians(self.__car_angle.degree + 45)),
 			"front": Radial(self.__position, self.__car_angle.radian),

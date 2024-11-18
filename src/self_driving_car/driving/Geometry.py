@@ -1,5 +1,5 @@
 import math
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import numpy
 from matplotlib.lines import Line2D
@@ -65,6 +65,33 @@ class Point:
 	def __init__(self, coordinate: numpy.ndarray) -> None:
 		self.coordinate: numpy.ndarray = coordinate
 
+	def __eq__(self, value: object, /) -> bool:
+		if not isinstance(value, "Point"):
+			raise NotImplementedError
+
+		return numpy.array_equal(value.coordinate, self.coordinate)
+
+	def __repr__(self) -> str:
+		return f"({self.coordinate[0]}, {self.coordinate[1]})"
+
+	def __add__(self, value: object, /) -> numpy.ndarray:
+		if not isinstance(value, "Point"):
+			raise NotImplementedError
+
+		if isinstance(value, numpy.ndarray):
+			return self.coordinate + value
+
+		return self.coordinate + value.coordinate
+
+	def __sub__(self, value: object, /) -> numpy.ndarray:
+		if not isinstance(value, "Point"):
+			raise NotImplementedError
+
+		if isinstance(value, numpy.ndarray):
+			return self.coordinate - value
+
+		return self.coordinate - value.coordinate
+
 	@property
 	def x(self) -> float:
 		return self.coordinate[0]
@@ -80,7 +107,7 @@ class Point:
 class Radial:
 	def __init__(self, base_point: Point, radian: float) -> None:
 		self.__base_point: Point = base_point
-		self.slope: numpy.ndarray = numpy.array([math.cos(radian), math.sin(radian)])
+		self.direction_vector: numpy.ndarray = numpy.array([math.cos(radian), math.sin(radian)])
 
 	@property
 	def base_point(self) -> Point:
@@ -99,7 +126,7 @@ class Radial:
 		self.__radian = numpy.array([math.cos(radian), math.sin(radian)])
 
 	def contains(self, point: Point) -> bool:
-		ts: numpy.ndarray = (point.coordinate - self.__base_point.coordinate) / self.slope
+		ts: numpy.ndarray = (point - self.__base_point) / self.direction_vector
 
 		return numpy.all(ts == ts[0]).item() and numpy.all(ts >= 0).item()
 
@@ -107,111 +134,69 @@ class Radial:
 		if t < 0:
 			raise ValueError("Radial.get_point: t should greater than 0.")
 
-		point: Point = self.__base_point
-		point.coordinate = point.coordinate + t * self.slope
-
-		return point
+		return Point(self.__base_point + t * self.direction_vector)
 
 	def draw(self, color: str = "red", line_width: int = 2, line_length: float = 4) -> Line2D:
-		unit_slope: numpy.ndarray = self.slope / numpy.linalg.norm(self.slope)
-		end_point: numpy.ndarray = self.__base_point.coordinate + unit_slope * line_length
+		end_point: numpy.ndarray = self.__base_point + self.direction_vector * line_length
 		return Line2D(
 			[self.__base_point.x, end_point[0]], [self.__base_point.y, end_point[1]], color=color, linewidth=line_width
 		)
 
 
-class VerticalLineSegment:
-	def __init__(self, endpoints: List[Point]) -> None:
-		if endpoints[0].x != endpoints[1].x:
-			raise ValueError("VerticalLineSegment: the end points not on a vertical line segment.")
-		if endpoints[0].y == endpoints[1].y:
+class LineSegment:
+	def __init__(self, endpoint1: Point, endpoint2: Point) -> None:
+		if numpy.array_equal(endpoint1.coordinate, endpoint2.coordinate):
 			raise ValueError("VerticalLineSegment: the end points are the same")
+		self.__endpoint1: Point = endpoint1
+		self.__endpoint2: Point = endpoint2
 
-		self.x: float = endpoints[0].x
-		self.y_min: float = min([endpoints[0].y, endpoints[1].y])
-		self.y_max: float = max([endpoints[0].y, endpoints[1].y])
-
-	def contains(self, point: Point) -> bool:
-		if point.x != self.x:
-			return False
-
-		if point.y < self.y_min or point.y > self.y_max:
-			return False
-
-		return True
-
-	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
-		if radial.slope[0] == 0:
-			return None
-
-		t: float = (self.x - radial.__base_point.x) / radial.slope[0]
-		intersect_point: Point = radial.get_point(t)
-		if not self.contains(intersect_point):
-			return None
-
-		return intersect_point
-
-	def distance_to_point(self, point: Point) -> float:
-		if point.y < self.y_min:
-			return point.distance_to(Point(numpy.array([self.x, self.y_min])))
-
-		if point.y > self.y_max:
-			return point.distance_to(Point(numpy.array([self.x, self.y_max])))
-
-		return abs(point.x - self.x)
-
-	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
-		return Line2D([self.x, self.x], [self.y_min, self.y_max], color=color, linewidth=line_width)
-
-
-class HorizontalLineSegment:
-	def __init__(self, endpoints: List[Point]) -> None:
-		if endpoints[0].y != endpoints[1].y:
-			raise ValueError("HorizontalLineSegment: the end points not on a horizontal line segment.")
-		if endpoints[0].x == endpoints[1].x:
-			raise ValueError("HorizontalLineSegment: the end points are the same")
-
-		self.x_min: float = min([endpoints[0].x, endpoints[1].x])
-		self.x_max: float = max([endpoints[0].x, endpoints[1].x])
-		self.y: float = endpoints[0].y
+		raw_vector: numpy.ndarray = endpoint2 - endpoint1
+		self.max_t: float = numpy.linalg.norm(raw_vector).item()
+		self.direction_vector: numpy.ndarray = raw_vector / self.max_t
 
 	def contains(self, point: Point) -> bool:
-		if point.y != self.y:
-			return False
+		ts: numpy.ndarray = (point - self.__endpoint1) / self.direction_vector
 
-		if point.x < self.x_min or point.x > self.x_max:
-			return False
-
-		return True
+		return numpy.all(ts == ts[0]).item() and numpy.all(ts >= 0).item() and 0 <= ts[0] <= self.max_t
 
 	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
-		if radial.slope[1] == 0:
+		xs: numpy.ndarray = numpy.column_stack((self.direction_vector, -radial.direction_vector))
+		y: numpy.ndarray = radial.base_point - self.__endpoint1
+
+		try:
+			_, t_segment = numpy.linalg.solve(xs, y)
+		except numpy.linalg.LinAlgError:
 			return None
 
-		t: float = (self.y - radial.__base_point.y) / radial.slope[1]
-		intersect_point: Point = radial.get_point(t)
-		if not self.contains(intersect_point):
+		if t_segment < 0 or t_segment > self.max_t:
 			return None
 
-		return intersect_point
+		return self.get_point(t_segment)
+
+	def get_point(self, t: float) -> Point:
+		if t < 0 or t > self.max_t:
+			raise ValueError(f"LineSegment.get_point: t should be in range [0, {self.max_t}]")
+
+		return Point(self.__endpoint1 + t * self.direction_vector)
 
 	def distance_to_point(self, point: Point) -> float:
-		if point.x < self.x_min:
-			return point.distance_to(Point(numpy.array([self.x_min, self.y])))
+		if self.contains(point):
+			return 0
 
-		if point.x > self.x_max:
-			return point.distance_to(Point(numpy.array([self.x_max, self.y])))
+		vector2point: numpy.ndarray = point - self.__endpoint1
+		projection: float = vector2point.dot(self.direction_vector)
+		if projection < 0:
+			return self.__endpoint1.distance_to(point)
+		if projection > self.max_t:
+			return self.__endpoint2.distance_to(point)
 
-		return abs(point.y - self.y)
+		slope: float = self.direction_vector[1] / self.direction_vector[0]
+		return abs(vector2point[1] - vector2point[0] * slope) / numpy.sqrt((1 + slope))
 
 	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
-		return Line2D([self.x_min, self.x_max], [self.y, self.y], color=color, linewidth=line_width)
-
-
-def get_line_segment(point1: Point, point2: Point) -> Optional[Union[VerticalLineSegment, HorizontalLineSegment]]:
-	if (point1.x == point2.x) and (point1.y != point2.y):
-		return VerticalLineSegment([point1, point2])
-	if (point1.y == point2.y) and (point1.x != point2.x):
-		return HorizontalLineSegment([point1, point2])
-
-	return None
+		return Line2D(
+			[self.__endpoint1.x, self.__endpoint2.x],
+			[self.__endpoint1.y, self.__endpoint2.y],
+			color=color,
+			linewidth=line_width,
+		)

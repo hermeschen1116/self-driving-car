@@ -1,9 +1,9 @@
-from typing import List, Union
+from typing import List
 
 import numpy
 from matplotlib.lines import Line2D
 
-from self_driving_car.driving.Geometry import HorizontalLineSegment, Point, VerticalLineSegment, get_line_segment
+from self_driving_car.driving.Geometry import LineSegment, Point
 
 
 class Playgroud:
@@ -11,19 +11,14 @@ class Playgroud:
 		if not numpy.array_equal(points[0].coordinate, points[-1].coordinate):
 			raise ValueError("Playgroud: points do not form a closed field.")
 
-		self.edges: List[Union[HorizontalLineSegment, VerticalLineSegment]] = []
+		self.edges: List[LineSegment] = []
 
 		print(goal[0].coordinate, goal[1].coordinate)
-		line_segment = get_line_segment(goal[0], goal[1])
-		if line_segment is None:
-			raise ValueError("Playgroud: fail to get goal line")
-		self.goal: Union[HorizontalLineSegment, VerticalLineSegment] = line_segment
+		self.goal: LineSegment = LineSegment(goal[0], goal[1])
 
 		num_points: int = len(points)
 		for i in range(num_points):
-			line_segment = get_line_segment(points[i], points[(i + 1) % num_points])
-			if line_segment is not None:
-				self.edges.append(line_segment)
+			self.edges.append(LineSegment(points[i], points[(i + 1) % num_points]))
 
 	def draw(self) -> List[Line2D]:
 		lines: List[Line2D] = []
