@@ -147,21 +147,21 @@ class LineSegment:
 	def __init__(self, endpoint1: Point, endpoint2: Point) -> None:
 		if numpy.array_equal(endpoint1.coordinate, endpoint2.coordinate):
 			raise ValueError("VerticalLineSegment: the end points are the same")
-		self.__endpoint1: Point = endpoint1
-		self.__endpoint2: Point = endpoint2
+		self.endpoint1: Point = endpoint1
+		self.endpoint2: Point = endpoint2
 
 		raw_vector: numpy.ndarray = endpoint2 - endpoint1
 		self.max_t: float = numpy.linalg.norm(raw_vector).item()
 		self.direction_vector: numpy.ndarray = raw_vector / self.max_t
 
 	def contains(self, point: Point) -> bool:
-		ts: numpy.ndarray = (point - self.__endpoint1) / self.direction_vector
+		ts: numpy.ndarray = (point - self.endpoint1) / self.direction_vector
 
 		return numpy.all(ts == ts[0]).item() and numpy.all(ts >= 0).item() and 0 <= ts[0] <= self.max_t
 
 	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
 		xs: numpy.ndarray = numpy.column_stack((self.direction_vector, -radial.direction_vector))
-		y: numpy.ndarray = radial.base_point - self.__endpoint1
+		y: numpy.ndarray = radial.base_point - self.endpoint1
 
 		try:
 			_, t_segment = numpy.linalg.solve(xs, y)
@@ -177,26 +177,26 @@ class LineSegment:
 		if t < 0 or t > self.max_t:
 			raise ValueError(f"LineSegment.get_point: t should be in range [0, {self.max_t}]")
 
-		return Point(self.__endpoint1 + t * self.direction_vector)
+		return Point(self.endpoint1 + t * self.direction_vector)
 
 	def distance_to_point(self, point: Point) -> float:
 		if self.contains(point):
 			return 0
 
-		vector2point: numpy.ndarray = point - self.__endpoint1
+		vector2point: numpy.ndarray = point - self.endpoint1
 		projection: float = vector2point.dot(self.direction_vector)
 		if projection < 0:
-			return self.__endpoint1.distance_to(point)
+			return self.endpoint1.distance_to(point)
 		if projection > self.max_t:
-			return self.__endpoint2.distance_to(point)
+			return self.endpoint2.distance_to(point)
 
 		slope: float = self.direction_vector[1] / self.direction_vector[0]
 		return abs(vector2point[1] - vector2point[0] * slope) / numpy.sqrt((1 + slope))
 
 	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
 		return Line2D(
-			[self.__endpoint1.x, self.__endpoint2.x],
-			[self.__endpoint1.y, self.__endpoint2.y],
+			[self.endpoint1.x, self.endpoint2.x],
+			[self.endpoint1.y, self.endpoint2.y],
 			color=color,
 			linewidth=line_width,
 		)

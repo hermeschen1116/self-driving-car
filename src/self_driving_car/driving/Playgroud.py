@@ -23,10 +23,10 @@ class Playgroud:
 	def playground_range(self) -> Tuple[float, float, float, float]:
 		x: List[float] = []
 		for edge in self.edges:
-			x += [edge.__endpoint1.x, edge.__endpoint2.x]
+			x += [edge.endpoint1.x, edge.endpoint2.x]
 		y: List[float] = []
 		for edge in self.edges:
-			y += [edge.__endpoint1.y, edge.__endpoint2.y]
+			y += [edge.endpoint1.y, edge.endpoint2.y]
 
 		return min(x), max(x), min(y), max(y)
 
