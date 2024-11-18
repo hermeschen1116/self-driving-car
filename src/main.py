@@ -55,7 +55,7 @@ def on_button_data_activate():
 	playgroud = Playgroud(raw_data[3], raw_data[2])
 
 	global playground_edges
-	if playground_edges is not None:
+	if len(playground_edges) == 0:
 		for edge in playground_edges:
 			edge.remove()
 
@@ -66,6 +66,10 @@ def on_button_data_activate():
 	playground_edges = playgroud.draw()
 	for edge in playground_edges:
 		ax.add_line(edge)
+
+	car, sensor = car.draws()
+	ax.add_patch(car)
+	ax.add_line(sensor)
 
 	canvas_playground.draw()
 
