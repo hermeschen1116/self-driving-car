@@ -24,6 +24,7 @@ variables: dict = {
 	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 }
+global car, playground, playground_edges
 car, playground = None, None
 playground_edges: list = []
 
