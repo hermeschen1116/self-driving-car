@@ -59,8 +59,8 @@ def on_button_data_activate():
 			edge.remove()
 
 	x_min, x_max, y_min, y_max = playgroud.playground_range()
-	ax.set_xlim(x_min + 10, x_max + 10)
-	ax.set_ylim(y_min + 10, y_max + 10)
+	ax.set_xlim(x_min - 10, x_max + 10)
+	ax.set_ylim(y_min - 10, y_max + 10)
 
 	playground_edges = playgroud.draw()
 	for edge in playground_edges:
