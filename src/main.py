@@ -47,47 +47,6 @@ ax.set_ylim(0, 100)
 canvas_playground: FigureCanvasTkAgg = create_figure_canvas(visual_group, fig)
 canvas_playground.get_tk_widget().pack(side="left", fill="x")
 
-
-# def on_button_activate() -> None:
-# 	canvas_data0.draw()
-# 	file_path: str = askopenfilename()print(f"file: {file_path}")print(f"file: {file_path}")
-# 	print(f"file: {file_path}")
-
-# 	raw_dataset: list = read_file(file_path)print(f"file: {file_path}")
-# 	dataset: polars.DataFrame = create_dataset(raw_dataset)
-# 	dataset_splits: dict = create_split(dataset, [2 / 3, 1 / 3])
-
-# 	train_dataset: polars.DataFrame = dataset_splits["train"]
-# 	test_dataset: polars.DataFrame = dataset_splits["test"]
-
-# 	point_groups: list = get_points_groups(test_dataset, test_dataset.get_column("label").to_list())
-# 	group_colors: list = generate_point_group_color(len(point_groups))
-# 	drawable: bool = draw_points(ax0, point_groups, group_colors)
-# 	canvas_data0.draw()
-
-# 	in_feature, out_feature = get_in_out_features(dataset)
-
-# 	model = CarController(in_feature, out_feature, variables["learning_rate"].get())
-# 	loss_function = MeanSquareError()
-
-# 	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
-# 	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, group_colors, variables)
-
-# 	result_message: str = f"""
-# Train Epochs: {current_epoch + 1}
-# Train Accuracy: {round(train_accuracy * 100, 2)}%
-# Test Accuracy: {round(test_accuracy * 100, 2)}%
-# Weight:\n{model.show_weights()}
-# 	"""
-# 	if not drawable:
-# 		result_message = f"Data dimension above 3 so it's not drawable\n{result_message}"
-# 	print(result_message)
-# 	messagebox.showinfo(message=result_message)
-
-
-# 	ax0.clear()
-# 	ax1.clear()
-#
 def on_button_data_activate():
 	file_path: str = askopenfilename()
 	print(f"playground data file: {file_path}")
@@ -95,6 +54,10 @@ def on_button_data_activate():
 	raw_data = read_playground_file(file_path)
 	car = Car(initial_position=raw_data[0], initial_direction=raw_data[1])
 	playgroud = Playgroud(raw_data[3], raw_data[2])
+
+	x_min, x_max, y_min, y_max = playgroud.playground_range()
+	ax.set_xlim(x_min + 2, x_max + 2)
+	ax.set_ylim(y_min + 2, y_max + 2)
 
 	global playground_edges
 	if len(playground_edges) != 0:
@@ -107,6 +70,7 @@ def on_button_data_activate():
 
 	canvas_playground.draw()
 
+# def on_button_train_activate() -> None:
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
 button_data.pack(fill="x")

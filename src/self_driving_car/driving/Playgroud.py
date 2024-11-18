@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 import numpy
 from matplotlib.lines import Line2D
@@ -19,6 +19,16 @@ class Playgroud:
 		num_points: int = len(points)
 		for i in range(num_points - 1):
 			self.edges.append(LineSegment(points[i], points[(i + 1) % num_points]))
+
+	def playground_range(self) -> Tuple[float, float, float, float]:
+		x: List[float] = []
+		for edge in self.edges:
+			x += [edge.__endpoint1.x, edge.__endpoint2.x]
+		y: List[float] = []
+		for edge in self.edges:
+			y += [edge.__endpoint1.y, edge.__endpoint2.y]
+
+		return min(x), max(x), min(y), max(y)
 
 	def draw(self) -> List[Line2D]:
 		lines: List[Line2D] = []
