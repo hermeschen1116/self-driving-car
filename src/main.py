@@ -186,7 +186,7 @@ Train Accuracy: {round(train_accuracy * 100, 2)}%
 	print(result_message)
 
 	global handler_angle
-	handler_angle: LimitedAngle = LimitedAngle(0, [-40, 40])
+	handler_angle = LimitedAngle(0, [-40, 40])
 	global trajectory_line
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)
 
