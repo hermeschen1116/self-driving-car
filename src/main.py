@@ -38,7 +38,7 @@ textbox_num_epochs.pack()
 visual_group: LabelFrame = tkinter.LabelFrame(padx=30, pady=30, border=0)
 visual_group.pack(side="left", fill="both")
 
-fig, ax = pyplot.subplots(figsize=(8, 8), dpi=100)
+fig, ax = pyplot.subplots(figsize=(4, 4), dpi=100)
 ax.axis("off")
 
 canvas_playground: FigureCanvasTkAgg = create_figure_canvas(visual_group, fig)
@@ -57,8 +57,6 @@ def on_button_data_activate():
 	if len(playground_edges) == 0:
 		for edge in playground_edges:
 			edge.remove()
-
-	# x_min, x_max, y_min, y_max = playgroud.playground_range()
 
 	playground_edges = playgroud.draw()
 	for edge in playground_edges:
