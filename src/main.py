@@ -68,7 +68,8 @@ def on_button_data_activate():
 	ax.add_patch(car)
 	ax.add_line(sensor)
 
-	ax.autoscale(True)  # 啟用自動縮放
+	ax.set_aspect("equal")
+	ax.autoscale(True)
 	ax.margins(0.1)
 
 	canvas_playground.draw()
