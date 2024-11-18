@@ -85,7 +85,7 @@ def on_button_data_activate():
 
 	ax.set_aspect("equal")
 	ax.autoscale(True, axis="both", tight=True)
-	ax.margins(0.1)
+	ax.margins(0.1, tight=True)
 
 	canvas_playground.draw()
 
