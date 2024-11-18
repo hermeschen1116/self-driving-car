@@ -6,7 +6,7 @@ from matplotlib.lines import Line2D
 from self_driving_car.driving.Geometry import LineSegment, Point
 
 
-class Playgroud:
+class Playground:
 	def __init__(self, points: List[Point], goal: List[Point]) -> None:
 		if not numpy.array_equal(points[0].coordinate, points[-1].coordinate):
 			raise ValueError("Playgroud: points do not form a closed field.")

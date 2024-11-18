@@ -13,7 +13,7 @@ from self_driving_car.data.Visualize import draw_points, get_points_groups
 
 def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 	data_size: int = numpy.array(dataset[0]["data"]).shape[1]
-	label_size: int = len(dataset.get_column("label").unique().to_list())
+	label_size: int = 1
 
 	return data_size, label_size
 
@@ -32,7 +32,6 @@ def train(
 			data, label = row["data"].to_numpy(), row["label"].to_numpy()
 
 			output: numpy.ndarray = model(data)
-			label_predicted += output.argmax(-1).tolist()
 
 			loss: float = loss_function(output, label)
 			all_loss.append(loss)

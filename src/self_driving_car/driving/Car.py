@@ -6,7 +6,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Circle
 
 from self_driving_car.driving.Geometry import LimitedAngle, Point, Radial
-from self_driving_car.driving.Playgroud import Playgroud
+from self_driving_car.driving.Playground import Playground
 
 
 class Car:
@@ -22,7 +22,7 @@ class Car:
 			"right": Radial(self.__position, math.radians(self.__car_angle.degree - 45)),
 		}
 
-	def __call__(self, handler_angle: LimitedAngle, playground: Playgroud) -> None:
+	def __call__(self, handler_angle: LimitedAngle, playground: Playground) -> None:
 		self.__turn(handler_angle)
 		self.__move(handler_angle)
 
@@ -33,6 +33,14 @@ class Car:
 	@property
 	def car_angle(self) -> float:
 		return self.__car_angle.degree
+
+	@property
+	def car_position(self) -> numpy.ndarray:
+		return self.__position.coordinate
+
+	@car_position.setter
+	def car_position(self, coordinate: numpy.ndarray) -> None:
+		self.__position = Point(coordinate)
 
 	def __turn(self, handler_angle: LimitedAngle) -> None:
 		new_car_degree: float = self.__car_angle.degree - math.degrees(
@@ -63,7 +71,7 @@ class Car:
 		self.__sensor["right"].base_point = self.__position
 		self.__sensor["right"].angle = math.radians(self.__car_angle.degree - 45)
 
-	def check_distance(self, playground: Playgroud) -> Optional[Tuple[float, float, float]]:
+	def check_distance(self, playground: Playground) -> Optional[Tuple[float, float, float]]:
 		left_distances: List[float] = []
 		front_distances: List[float] = []
 		right_distances: List[float] = []
@@ -86,7 +94,7 @@ class Car:
 
 		return distances
 
-	def check_goal(self, playground: Playgroud) -> bool:
+	def check_goal(self, playground: Playground) -> bool:
 		return playground.goal.distance_to_point(self.__position) <= self.__radius
 
 	def draws(self) -> Tuple[Circle, Line2D]:
