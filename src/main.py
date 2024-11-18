@@ -24,9 +24,7 @@ variables: dict = {
 	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 }
-global car, playground, playground_edges
-car, playground = None, None
-playground_edges: list = []
+car, playground, playground_edges = None, None, []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 control_group.pack(side="right")
@@ -56,7 +54,7 @@ def on_button_data_activate():
 	car = Car(initial_position=raw_data[0], initial_direction=raw_data[1])
 	playgroud = Playgroud(raw_data[3], raw_data[2])
 
-	if len(playground_edges) != 0:
+	if playground_edges is not None:
 		for edge in playground_edges:
 			edge.remove()
 
