@@ -19,7 +19,7 @@ def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 
 
 def train(
-	dataset: polars.DataFrame, model: CarController, loss_function, ax: Axes, variables: Dict[str, tkinter.Variable]
+	dataset: polars.DataFrame, model: CarController, loss_function, variables: Dict[str, tkinter.Variable]
 ) -> Tuple[int, float]:
 	label_true: list = dataset.get_column("label").to_list()
 	accuracy: float = 0
