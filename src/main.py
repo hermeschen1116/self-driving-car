@@ -65,6 +65,7 @@ def on_button_data_activate():
 			edge.remove()
 
 	playground_edges = playgroud.draw()
+	print(len(playground_edges))
 	for edge in playground_edges:
 		ax.add_line(edge)
 
