@@ -20,7 +20,7 @@ def read_playground_file(source: Union[str, os.PathLike]) -> Tuple[Point, float,
 	initial_point: Point = Point(numpy.array(raw_data[0][:2]))
 	initial_angle: float = raw_data[0][-1]
 	goal_line: List[Point] = [Point(numpy.array(raw_data[1])), Point(numpy.array(raw_data[2]))]
-	playground: List[Point] = [Point(numpy.array(coordinate)) for coordinate in raw_data[3:]]
+	playground: List[Point] = [Point(numpy.array(coordinate)) for coordinate in raw_data[3:-1]]
 	print(raw_data[3:])
 	return initial_point, initial_angle, goal_line, playground
 
