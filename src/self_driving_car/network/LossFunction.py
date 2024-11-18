@@ -15,4 +15,4 @@ class MeanSquareError(Module):
 		return numpy.sum((numpy.power((y_predicted - y_true), 2) * 0.5)) / batch_size
 
 	def backward(self, y_predicted: numpy.ndarray, y_true: numpy.ndarray) -> numpy.ndarray:
-		return y_predicted - y_true
+		return y_predicted - y_true.reshape((y_true.shape[0], 1))

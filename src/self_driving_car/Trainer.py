@@ -21,12 +21,10 @@ def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
 def train(
 	dataset: polars.DataFrame, model: CarController, loss_function, variables: Dict[str, tkinter.Variable]
 ) -> Tuple[int, float]:
-	label_true: list = dataset.get_column("label").to_list()
-	accuracy: float = 0
-	current_epochs: int = 0
+	total_loss: float = 0
+	num_epochs: int = variables["num_epochs"].get()
 
-	while True:
-		label_predicted: list = []
+	for i in range(num_epochs):
 		all_loss: list = []
 		for row in dataset.iter_slices(4):
 			data, label = row["data"].to_numpy(), row["label"].to_numpy()
@@ -38,12 +36,10 @@ def train(
 
 			model.optimize(loss_function.gradient)
 
-		print(f"epchs{current_epochs}, loss: {sum(all_loss) / len(all_loss)}")
-		accuracy: float = accuracy_score(label_true, label_predicted)
+		total_loss = sum(all_loss) / len(all_loss)
+		print(f"epchs{i}, loss: {total_loss}")
 
-		current_epochs += 1
-
-	return current_epochs, accuracy
+	return num_epochs, total_loss
 
 
 def evaluate(

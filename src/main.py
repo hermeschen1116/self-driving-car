@@ -124,7 +124,7 @@ def control_car() -> Optional[bool]:
 	return None
 
 
-def update_animation():
+def update_animation(frame):
 	global car_circle, sensor_line
 	car_circle.remove()
 	sensor_line.remove()
@@ -174,11 +174,11 @@ def on_button_train_activate() -> None:
 	controller = CarController(in_feature, out_feature, variables["learning_rate"].get())
 	loss_function = MeanSquareError()
 
-	current_epoch, train_accuracy = train(dataset, controller, loss_function, variables)
+	current_epoch, train_loss = train(dataset, controller, loss_function, variables)
 
 	result_message: str = f"""
 Train Epochs: {current_epoch + 1}
-Train Accuracy: {round(train_accuracy * 100, 2)}%
+Train loss: {round(train_loss * 100, 2)}%
 	"""
 	print(result_message)
 
@@ -188,7 +188,7 @@ Train Accuracy: {round(train_accuracy * 100, 2)}%
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)
 
 	global animation
-	animation = FuncAnimation(fig, update_animation, interval=100, repeat=False)
+	animation = FuncAnimation(fig, update_animation, frames=1000, interval=100, repeat=False)
 
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
