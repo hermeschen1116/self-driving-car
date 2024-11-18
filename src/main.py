@@ -105,6 +105,8 @@ def on_button_data_activate():
 	for edge in playground_edges:
 		ax.add_line(edge)
 
+	canvas_playground.draw()
+
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
 button_data.pack(fill="x")
