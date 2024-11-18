@@ -29,23 +29,18 @@ def train(
 		label_predicted: list = []
 		all_loss: list = []
 		for row in dataset.iter_slices(4):
-			data, one_hot_label = row["data"].to_numpy(), row["one_hot_label"].to_numpy()
+			data, label = row["data"].to_numpy(), row["label"].to_numpy()
 
 			output: numpy.ndarray = model(data)
 			label_predicted += output.argmax(-1).tolist()
 
-			loss: float = loss_function(output, one_hot_label)
+			loss: float = loss_function(output, label)
 			all_loss.append(loss)
 
 			model.optimize(loss_function.gradient)
 
 		print(f"epchs{current_epochs}, loss: {sum(all_loss) / len(all_loss)}")
 		accuracy: float = accuracy_score(label_true, label_predicted)
-
-		if ((current_epochs + 1) == variables["num_epochs"].get()) or (
-			(variables["optimize_target"].get() == "accuracy") and (accuracy >= variables["target_accuracy"].get())
-		):
-			break
 
 		current_epochs += 1
 
