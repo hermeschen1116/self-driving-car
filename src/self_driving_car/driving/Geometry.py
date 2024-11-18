@@ -75,20 +75,20 @@ class Point:
 		return f"({self.coordinate[0]}, {self.coordinate[1]})"
 
 	def __add__(self, value: object, /) -> numpy.ndarray:
-		if not isinstance(value, Point):
-			raise NotImplementedError
-
 		if isinstance(value, numpy.ndarray):
 			return self.coordinate + value
+
+		if not isinstance(value, Point):
+			raise NotImplementedError
 
 		return self.coordinate + value.coordinate
 
 	def __sub__(self, value: object, /) -> numpy.ndarray:
-		if not isinstance(value, Point):
-			raise NotImplementedError
-
 		if isinstance(value, numpy.ndarray):
 			return self.coordinate - value
+
+		if not isinstance(value, Point):
+			raise NotImplementedError
 
 		return self.coordinate - value.coordinate
 
