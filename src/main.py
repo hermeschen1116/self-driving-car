@@ -125,12 +125,10 @@ def control_car() -> Optional[bool]:
 
 def animation():
 	global car_circle, sensor_line
-	if car_circle is None:
-		raise ValueError("Self Driving Car: car_circle object not initialized.")
-	if sensor_line is None:
-		raise ValueError("Self Driving Car: sensor_line object not initialized.")
-	car_circle.remove()
-	sensor_line.remove()
+	if car_circle is not None:
+		car_circle.remove()
+	if sensor_line is not None:
+		sensor_line.remove()
 
 	result = control_car()
 
