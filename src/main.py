@@ -104,7 +104,7 @@ def control_car() -> Optional[bool]:
 	if controller.input_feature == 5:
 		input_data = numpy.concatenate((car.car_position, input_data))
 
-	angle: float = controller.forward(input_data).item()
+	angle: float = controller.forward(input_data)[0]
 
 	global handler_angle, playground
 	if handler_angle is None:
