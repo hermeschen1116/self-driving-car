@@ -60,14 +60,14 @@ class CarController(Module):
 		local_gradient: numpy.ndarray = loss_gradient * self.output_activation.gradient
 		layer_gradient: numpy.ndarray = self.output_layer.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation0.gradient
-		layer_gradient = self.hidden_layer0.optimize(self.learning_rate * local_gradient)
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation2.gradient
+		layer_gradient = self.hidden_layer2.optimize(self.learning_rate * local_gradient)
 
 		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation1.gradient
 		layer_gradient = self.hidden_layer1.optimize(self.learning_rate * local_gradient)
 
-		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation2.gradient
-		layer_gradient = self.hidden_layer2.optimize(self.learning_rate * local_gradient)
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation0.gradient
+		layer_gradient = self.hidden_layer0.optimize(self.learning_rate * local_gradient)
 
 		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.input_activation.gradient
 		self.input_layer.optimize(self.learning_rate * local_gradient)
