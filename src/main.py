@@ -31,6 +31,7 @@ variables: dict = {
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
 }
 car, playground = None, None
+car_circle, sensor_line = None, None
 trajectory_x, trajectory_y, trajectory_line = [], [], None
 controller = None
 handler_angle = LimitedAngle(0, [0, 0])
@@ -126,6 +127,10 @@ def control_car() -> Optional[bool]:
 
 def animation():
 	global car_circle, sensor_line
+	if car_circle is None:
+		raise ValueError("Self Driving Car: car_circle object not initialized.")
+	if sensor_line is None:
+		raise ValueError("Self Driving Car: sensor_line object not initialized.")
 	car_circle.remove()
 	sensor_line.remove()
 
@@ -179,7 +184,7 @@ def on_button_train_activate() -> None:
 	current_epoch, train_loss = train(dataset, controller, loss_function, variables)
 
 	result_message: str = f"""
-Train Epochs: {current_epoch + 1}
+Train Epochs: {current_epoch}
 Train loss: {round(train_loss * 100, 2)}%
 	"""
 	print(result_message)
