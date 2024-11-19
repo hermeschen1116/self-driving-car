@@ -27,8 +27,8 @@ numpy.random.seed(37710)
 window: tkinter.Tk = create_window("Self Driving Car", "")
 
 variables: dict = {
-	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
-	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
+	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.6),
+	"num_epochs": tkinter.IntVar(name="num_epochs", value=500),
 }
 car, playground = None, None
 car_circle, sensor_line = None, None
