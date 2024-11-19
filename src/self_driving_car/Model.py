@@ -42,9 +42,12 @@ class CarController(Module):
 
 		x_i = self.input_layer(x_i)
 		x_i = self.input_activation(x_i)
-		for i in range(self.__num_hidden_layer):
-			x_i = self.hidden_layer[i](x_i)
-			x_i = self.hidden_activation[i](x_i)
+		x_i = self.hidden_layer0(x_i)
+		x_i = self.hidden_activation0(x_i)
+		x_i = self.hidden_layer1(x_i)
+		x_i = self.hidden_activation1(x_i)
+		x_i = self.hidden_layer2(x_i)
+		x_i = self.hidden_activation2(x_i)
 		x_i = self.output_layer(x_i)
 		y: numpy.ndarray = self.output_activation(x_i)
 
