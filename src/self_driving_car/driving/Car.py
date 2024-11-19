@@ -87,6 +87,9 @@ class Car:
 			if right_intersect is not None:
 				right_distances.append(self.__position.distance_to(right_intersect))
 
+		# min_left_distance: float = min(left_distances) if len(left_distances) != 0 else 0
+		# min_front_distance: float = min(front_distances) if len(front_distances) != 0 else 0
+		# min_left_distance: float = min(left_distances) if len(left_distances) != 0 else 0
 		distances: Tuple[float, float, float] = (min(left_distances), min(front_distances), min(right_distances))
 
 		if any([distance < self.__radius for distance in distances]):

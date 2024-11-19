@@ -97,7 +97,10 @@ def control_car() -> Optional[bool]:
 	if controller is None:
 		raise ValueError("Self Driving Car: controller object not initialized.")
 
-	sensor_data = car.check_distance
+	global playground
+	if playground is None:
+		raise ValueError("Self Driving Car: playground object not initialized.")
+	sensor_data = car.check_distance(playground)
 	if sensor_data is None:
 		return False
 	input_data: numpy.ndarray = numpy.array(sensor_data)
@@ -106,11 +109,9 @@ def control_car() -> Optional[bool]:
 
 	angle: float = controller.forward(input_data)[0]
 
-	global handler_angle, playground
+	global handler_angle
 	if handler_angle is None:
 		raise ValueError("Self Driving Car: handler_angle object not initialized.")
-	if playground is None:
-		raise ValueError("Self Driving Car: playground object not initialized.")
 	handler_angle.radian = angle
 	car(handler_angle, playground)
 
