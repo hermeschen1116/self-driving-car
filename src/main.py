@@ -139,7 +139,7 @@ def animation():
 
 	if result is not None:
 		log_path: str = "./dist/controller_record.txt"
-		log: List[str] = [f"{' '.join([str(value) for value in record])}\n" for record in controller_record]
+		log: List[str] = [f"{' '.join([f'{round(value, 5):.5f}' for value in record])}\n" for record in controller_record]
 		print("".join(log))
 		if result:
 			with open(log_path, "w") as file:
