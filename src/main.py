@@ -35,7 +35,7 @@ car, car_circle, sensor_line = None, None, None
 trajectory_x, trajectory_y, trajectory_line = [], [], None
 handler_angle = LimitedAngle(0, [0, 0])
 controller = None
-controller_record: List[List[float]] = []
+controller_record = []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 control_group.pack(side="right")
@@ -76,7 +76,7 @@ def on_button_data_activate():
 	trajectory_x, trajectory_y, trajectory_line = [], [], None
 	handler_angle = LimitedAngle(0, [0, 0])
 	controller = None
-	controller_record: List[List[float]] = []
+	controller_record = []
 
 	file_path: str = askopenfilename()
 	if not file_path:
