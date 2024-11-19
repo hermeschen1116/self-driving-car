@@ -141,7 +141,7 @@ def animation():
 		if result:
 			log_path: str = "./controller_record.txt"
 			with open(log_path, "w") as file:
-				file.writelines([f"{''.join([str(value) for value in record])}\n" for record in controller_record])
+				file.writelines([f"{' '.join([str(value) for value in record])}\n" for record in controller_record])
 			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
 			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
 		if result is False:
