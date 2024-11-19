@@ -28,6 +28,7 @@ def train(
 		all_loss: list = []
 		for row in dataset.iter_slices(4):
 			data, label = row["data"].to_numpy(), row["label"].to_numpy()
+			label = label.reshape((label.shape[0], 1))
 
 			output: numpy.ndarray = model(data)
 
