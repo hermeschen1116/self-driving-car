@@ -57,16 +57,7 @@ canvas_playground.get_tk_widget().pack(side="left", fill="x")
 
 
 def on_button_data_activate():
-	for patch in ax.patches:
-		patch.remove()
-	for line in ax.lines:
-		line.remove()
-
-	global car_circle, sensor_line
-	if car_circle is not None:
-		car_circle.remove()
-	if sensor_line is not None:
-		sensor_line.remove()
+	ax.clear()
 
 	file_path: str = askopenfilename()
 	if not file_path:
@@ -180,6 +171,18 @@ def animation():
 
 
 def on_button_train_activate() -> None:
+	global car_circle, sensor_line, trajectory_line, trajectory_x, trajectory_y
+	if car_circle is not None:
+		car_circle.remove()
+		car_circle = None
+	if sensor_line is not None:
+		sensor_line.remove()
+		sensor_line = None
+	if trajectory_line is not None:
+		trajectory_line.remove()
+		trajectory_line = None
+	trajectory_x, trajectory_y = [], []
+
 	file_path: str = askopenfilename()
 	if not file_path:
 		messagebox.showerror(title="Self Driving Car", message="No file selected.")
