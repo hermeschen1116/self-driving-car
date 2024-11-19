@@ -28,8 +28,8 @@ def train(
 
 			output: numpy.ndarray = model(data)
 
-			loss: float = loss_function(output, label)
-			all_loss.append(loss)
+			loss: numpy.ndarray = loss_function(output, label)
+			all_loss.append(loss.item())
 
 			model.optimize(loss_function.gradient)
 
