@@ -64,7 +64,7 @@ def on_button_data_activate():
 
 	file_path: str = askopenfilename()
 	if not file_path:
-		messagebox.showerror("No file selected.")
+		messagebox.showerror(title="Self Driving Car", message="No file selected.")
 		return
 	print(f"playground data file: {file_path}")
 
@@ -147,10 +147,12 @@ def animation():
 			with open(log_path, "w") as file:
 				file.writelines(log)
 			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
-			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
+			messagebox.showinfo(
+				title="Self Driving Car", message=f"Experiment successfully finished!\nLog file write to {log_path}."
+			)
 		if result is False:
 			print("Experiment failed. The car broken.")
-			messagebox.showerror("Experiment failed. The car broken.")
+			messagebox.showerror(title="Self Driving Car", message="Experiment failed. The car broken.")
 		return
 
 	global car
@@ -175,7 +177,7 @@ def animation():
 def on_button_train_activate() -> None:
 	file_path: str = askopenfilename()
 	if not file_path:
-		messagebox.showerror("No file selected.")
+		messagebox.showerror(title="Self Driving Car", message="No file selected.")
 		return
 	print(f"train data file: {file_path}")
 
