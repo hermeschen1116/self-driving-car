@@ -1,11 +1,8 @@
 import tkinter
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import numpy
 import polars
-from matplotlib.axes import Axes
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from sklearn.metrics import accuracy_score, classification_report
 
 from self_driving_car.Model import CarController
 
