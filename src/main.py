@@ -118,7 +118,7 @@ def control_car() -> Optional[bool]:
 	car(handler_angle, playground)
 
 	global controller_record
-	controller_record.append(input_data.tolist() + [car.car_angle])
+	controller_record.append(input_data.tolist()[0] + [car.car_angle])
 
 	if car.check_goal(playground):
 		return True
