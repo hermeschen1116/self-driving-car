@@ -7,7 +7,6 @@ from typing import List, Optional
 import numpy
 import polars
 from matplotlib import pyplot
-from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from self_driving_car.Model import CarController
@@ -124,7 +123,7 @@ def control_car() -> Optional[bool]:
 	return None
 
 
-def update_animation():
+def animation():
 	global car_circle, sensor_line
 	car_circle.remove()
 	sensor_line.remove()
@@ -132,10 +131,6 @@ def update_animation():
 	result = control_car()
 
 	if result is not None:
-		global animation
-		if animation is None:
-			raise ValueError("Self Driving Car: animation object not initialized.")
-		animation.event_source.stop()
 		if result:
 			log_path: str = "./controller_record.txt"
 			with open(log_path, "w") as file:
@@ -160,6 +155,8 @@ def update_animation():
 	trajectory_line.set_data(trajectory_x, trajectory_y)
 
 	canvas_playground.draw()
+
+	window.after(100, animation)
 
 
 def on_button_train_activate() -> None:
@@ -190,8 +187,7 @@ Train loss: {round(train_loss * 100, 2)}%
 	global trajectory_line
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)[0]
 
-	global animation
-	animation = FuncAnimation(fig, update_animation, interval=100, repeat=False)
+	animation()
 
 
 button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
