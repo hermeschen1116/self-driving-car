@@ -173,7 +173,6 @@ class LineSegment:
 			return None
 
 		if t_segment < 0 or t_segment > self.max_t:
-			print("t out of range")
 			return None
 
 		return self.get_point(t_segment)
