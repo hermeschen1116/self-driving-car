@@ -66,7 +66,7 @@ class Point:
 		self.coordinate: numpy.ndarray = coordinate
 
 	def __eq__(self, value: object, /) -> bool:
-		if not isinstance(value, "Point"):
+		if not isinstance(value, Point):
 			raise NotImplementedError
 
 		return numpy.array_equal(value.coordinate, self.coordinate)
@@ -107,6 +107,7 @@ class Point:
 class Radial:
 	def __init__(self, base_point: Point, radian: float) -> None:
 		self.__base_point: Point = base_point
+		self.__angle: float = radian
 		self.direction_vector: numpy.ndarray = numpy.array([math.cos(radian), math.sin(radian)])
 
 	@property
@@ -119,11 +120,12 @@ class Radial:
 
 	@property
 	def angle(self) -> float:
-		return math.degrees(self.__radian)
+		return math.degrees(self.__angle)
 
 	@angle.setter
 	def angle(self, radian: float):
-		self.__radian = numpy.array([math.cos(radian), math.sin(radian)])
+		self.__angle = radian
+		self.direction_vector = numpy.array([math.cos(radian), math.sin(radian)])
 
 	def contains(self, point: Point) -> bool:
 		ts: numpy.ndarray = (point - self.__base_point) / self.direction_vector
@@ -161,8 +163,10 @@ class LineSegment:
 
 	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
 		xs: numpy.ndarray = numpy.column_stack((self.direction_vector, -radial.direction_vector))
-		y: numpy.ndarray = radial.base_point - self.endpoint1
+		if numpy.linalg.det(xs) == 0:
+			return None
 
+		y: numpy.ndarray = radial.base_point - self.endpoint1
 		try:
 			_, t_segment = numpy.linalg.solve(xs, y)
 		except numpy.linalg.LinAlgError:
@@ -190,8 +194,8 @@ class LineSegment:
 		if projection > self.max_t:
 			return self.endpoint2.distance_to(point)
 
-		slope: float = self.direction_vector[1] / self.direction_vector[0]
-		return abs(vector2point[1] - vector2point[0] * slope) / numpy.sqrt((1 + slope))
+		projection_point: numpy.ndarray = self.endpoint1 + projection * self.direction_vector
+		return numpy.linalg.norm(point - projection_point).item()
 
 	def draw(self, color: str = "black", line_width: int = 2) -> Line2D:
 		return Line2D(
