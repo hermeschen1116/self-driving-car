@@ -171,6 +171,7 @@ def on_button_train_activate() -> None:
 
 	in_feature, out_feature = get_in_out_features(dataset)
 
+	global controller
 	controller = CarController(in_feature, out_feature, variables["learning_rate"].get())
 	loss_function = MeanSquareError()
 
