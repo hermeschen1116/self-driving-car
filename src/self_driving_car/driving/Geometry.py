@@ -162,17 +162,18 @@ class LineSegment:
 		return numpy.allclose(ts, ts[0], atol=1e-9) and numpy.all(ts >= 0).item() and 0 <= ts[0] <= self.max_t
 
 	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
-		xs: numpy.ndarray = numpy.column_stack((self.direction_vector, -radial.direction_vector))
+		xs: numpy.ndarray = numpy.column_stack((radial.direction_vector, -self.direction_vector))
 		if numpy.linalg.det(xs) == 0:
 			return None
 
-		y: numpy.ndarray = radial.base_point - self.endpoint1
+		y: numpy.ndarray = self.endpoint1 - radial.base_point
 		try:
 			_, t_segment = numpy.linalg.solve(xs, y)
 		except numpy.linalg.LinAlgError:
 			return None
 
 		if t_segment < 0 or t_segment > self.max_t:
+			print("t out of range")
 			return None
 
 		return self.get_point(t_segment)
