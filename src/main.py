@@ -208,7 +208,6 @@ Train loss: {round(train_loss * 100, 2)}%
 
 	global handler_angle
 	handler_angle = LimitedAngle(0, [-40, 40])
-	global trajectory_line
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)[0]
 
 	animation()
