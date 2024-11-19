@@ -138,10 +138,12 @@ def animation():
 	result = control_car()
 
 	if result is not None:
+		log_path: str = "./dist/controller_record.txt"
+		log: List[str] = [f"{' '.join([str(value) for value in record])}\n" for record in controller_record]
+		print(log)
 		if result:
-			log_path: str = "./controller_record.txt"
 			with open(log_path, "w") as file:
-				file.writelines([f"{' '.join([str(value) for value in record])}\n" for record in controller_record])
+				file.writelines(log)
 			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
 			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
 		if result is False:
