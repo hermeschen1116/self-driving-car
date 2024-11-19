@@ -2,36 +2,40 @@ import random
 import tkinter
 from tkinter import LabelFrame, messagebox
 from tkinter.filedialog import askopenfilename
+from typing import List, Optional
 
 import numpy
 import polars
 from matplotlib import pyplot
-from matplotlib.axes import Axes
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
 
-from self_driving_car.Model import Perceptron
-from self_driving_car.Trainer import evaluate, get_in_out_features, train
-from self_driving_car.data.Preprocess import create_dataset, create_split, read_file
-from self_driving_car.data.Visualize import draw_points, generate_point_group_color, get_points_groups
+from self_driving_car.Model import CarController
+from self_driving_car.Trainer import get_in_out_features, train
+from self_driving_car.data.Preprocess import create_dataset, read_file, read_playground_file
+from self_driving_car.driving.Car import Car
+from self_driving_car.driving.Geometry import LimitedAngle
+from self_driving_car.driving.Playground import Playground
 from self_driving_car.network.LossFunction import MeanSquareError
 from self_driving_car.ui.Button import create_button
 from self_driving_car.ui.Canvas import create_figure_canvas
-from self_driving_car.ui.Menu import create_named_menu
 from self_driving_car.ui.TextBox import create_named_textbox
 from self_driving_car.ui.Window import create_window
 
 random.seed(37710)
 numpy.random.seed(37710)
 
-window: tkinter.Tk = create_window("Perceptron", "")
+window: tkinter.Tk = create_window("Self Driving Car", "")
 
 variables: dict = {
 	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
-	"target_accuracy": tkinter.DoubleVar(name="target_accuracy", value=0.7),
-	"optimize_target": tkinter.StringVar(name="optimize_target", value="epoch"),
 }
+car, playground = None, None
+car_circle, sensor_line = None, None
+trajectory_x, trajectory_y, trajectory_line = [], [], None
+controller = None
+handler_angle = LimitedAngle(0, [0, 0])
+controller_record: List[List[float]] = []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 control_group.pack(side="right")
@@ -39,77 +43,167 @@ control_group.pack(side="right")
 textbox_learning_rate: LabelFrame = create_named_textbox(control_group, "Learning Rate", variables["learning_rate"])
 textbox_learning_rate.pack()
 
-textbox_num_epochs: LabelFrame = create_named_textbox(
-	control_group, "Maximum Number of Epochs", variables["num_epochs"]
-)
+textbox_num_epochs: LabelFrame = create_named_textbox(control_group, "Number of Epochs", variables["num_epochs"])
 textbox_num_epochs.pack()
-
-textbox_target_accuracy: LabelFrame = create_named_textbox(
-	control_group, "Target Train Accuracy", variables["target_accuracy"]
-)
-textbox_target_accuracy.pack()
-
-menu_optimize_target: LabelFrame = create_named_menu(
-	control_group, "Optimize Target", ["epoch", "accuracy"], variables["optimize_target"]
-)
-menu_optimize_target.pack(fill="x")
 
 visual_group: LabelFrame = tkinter.LabelFrame(padx=30, pady=30, border=0)
 visual_group.pack(side="left", fill="both")
 
-figure0: Figure = pyplot.figure(figsize=(3, 3))
-ax0: Axes = figure0.add_subplot(projection="3d")
-figure1: Figure = pyplot.figure(figsize=(3, 3))
-ax1: Axes = figure1.add_subplot(projection="3d")
+fig, ax = pyplot.subplots(figsize=(4, 4), dpi=100)
+ax.axis("off")
 
-canvas_data0: FigureCanvasTkAgg = create_figure_canvas(visual_group, figure0)
-canvas_data0.get_tk_widget().pack(side="left", fill="x")
-canvas_data1: FigureCanvasTkAgg = create_figure_canvas(visual_group, figure1)
-canvas_data1.get_tk_widget().pack(side="right", fill="x")
+canvas_playground: FigureCanvasTkAgg = create_figure_canvas(visual_group, fig)
+canvas_playground.get_tk_widget().pack(side="left", fill="x")
 
 
-def on_button_activate() -> None:
-	canvas_data0.draw()
-	canvas_data1.draw()
+def on_button_data_activate():
+	for patch in ax.patches:
+		patch.remove()
+	for line in ax.lines:
+		line.remove()
+
 	file_path: str = askopenfilename()
-	print(f"file: {file_path}")
+	if not file_path:
+		messagebox.showerror("No file selected.")
+		return
+	print(f"playground data file: {file_path}")
+
+	raw_data = read_playground_file(file_path)
+
+	global car, playground
+	car = Car(initial_position=raw_data[0], initial_direction=raw_data[1])
+	playground = Playground(raw_data[3], raw_data[2])
+
+	playground_edges = playground.draw()
+	for edge in playground_edges:
+		ax.add_line(edge)
+
+	global car_circle, sensor_line
+	car_circle, sensor_line = car.draws()
+	ax.add_patch(car_circle)
+	ax.add_line(sensor_line)
+
+	ax.set_aspect("equal")
+	ax.autoscale(True, axis="both", tight=True)
+	ax.margins(0.1, tight=True)
+
+	canvas_playground.draw()
+
+
+def control_car() -> Optional[bool]:
+	global car, controller
+
+	if car is None:
+		raise ValueError("Self Driving Car: car object not initialized.")
+	if controller is None:
+		raise ValueError("Self Driving Car: controller object not initialized.")
+
+	global playground
+	if playground is None:
+		raise ValueError("Self Driving Car: playground object not initialized.")
+	sensor_data = car.check_distance(playground)
+	if sensor_data is None:
+		return False
+	input_data: numpy.ndarray = numpy.array(sensor_data)
+	if controller.input_feature == 5:
+		input_data = numpy.concatenate((car.car_position, input_data))
+
+	input_data = input_data.reshape((1, input_data.shape[0]))
+	angle: float = controller.forward(input_data)[0]
+
+	global handler_angle
+	if handler_angle is None:
+		raise ValueError("Self Driving Car: handler_angle object not initialized.")
+	handler_angle.radian = angle
+	car(handler_angle, playground)
+
+	global controller_record
+	controller_record.append(input_data.tolist() + [car.car_angle])
+
+	if car.check_goal(playground):
+		return True
+
+	return None
+
+
+def animation():
+	global car_circle, sensor_line
+	if car_circle is None:
+		raise ValueError("Self Driving Car: car_circle object not initialized.")
+	if sensor_line is None:
+		raise ValueError("Self Driving Car: sensor_line object not initialized.")
+	car_circle.remove()
+	sensor_line.remove()
+
+	result = control_car()
+
+	if result is not None:
+		if result:
+			log_path: str = "./controller_record.txt"
+			with open(log_path, "w") as file:
+				file.writelines([f"{''.join([str(value) for value in record])}\n" for record in controller_record])
+			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
+			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
+		if result is False:
+			print("Experiment failed. The car broken.")
+			messagebox.showerror("Experiment failed. The car broken.")
+		return
+
+	global car
+	if car is None:
+		raise ValueError("Self Driving Car: car object not initialized.")
+	car_circle, sensor_line = car.draws()
+	ax.add_patch(car_circle)
+	ax.add_line(sensor_line)
+
+	global trajectory_x, trajectory_y, trajectory_line
+	if trajectory_line is None:
+		raise ValueError("Self Driving Car: trajectory_line object not initialized.")
+	trajectory_x.append(car.car_position[0])
+	trajectory_y.append(car.car_position[1])
+	trajectory_line.set_data(trajectory_x, trajectory_y)
+
+	canvas_playground.draw()
+
+	window.after(100, animation)
+
+
+def on_button_train_activate() -> None:
+	file_path: str = askopenfilename()
+	if not file_path:
+		messagebox.showerror("No file selected.")
+		return
+	print(f"train data file: {file_path}")
 
 	raw_dataset: list = read_file(file_path)
 	dataset: polars.DataFrame = create_dataset(raw_dataset)
-	dataset_splits: dict = create_split(dataset, [2 / 3, 1 / 3])
-
-	train_dataset: polars.DataFrame = dataset_splits["train"]
-	test_dataset: polars.DataFrame = dataset_splits["test"]
-
-	point_groups: list = get_points_groups(test_dataset, test_dataset.get_column("label").to_list())
-	group_colors: list = generate_point_group_color(len(point_groups))
-	drawable: bool = draw_points(ax0, point_groups, group_colors)
-	canvas_data0.draw()
 
 	in_feature, out_feature = get_in_out_features(dataset)
 
-	model = Perceptron(in_feature, out_feature, variables["learning_rate"].get())
+	global controller
+	controller = CarController(in_feature, out_feature, variables["learning_rate"].get())
 	loss_function = MeanSquareError()
 
-	current_epoch, train_accuracy = train(train_dataset, model, loss_function, ax1, canvas_data1, variables)
-	test_accuracy: float = evaluate(test_dataset, model, ax1, canvas_data1, group_colors, variables)
+	current_epoch, train_loss = train(dataset, controller, loss_function, variables)
 
 	result_message: str = f"""
-Train Epochs: {current_epoch + 1}
-Train Accuracy: {round(train_accuracy * 100, 2)}%
-Test Accuracy: {round(test_accuracy * 100, 2)}%
-Weight:\n{model.show_weights()}
+Train Epochs: {current_epoch}
+Train loss: {round(train_loss * 100, 2)}%
 	"""
-	if not drawable:
-		result_message = f"Data dimension above 3 so it's not drawable\n{result_message}"
 	print(result_message)
-	messagebox.showinfo(message=result_message)
 
-	ax0.clear()
-	ax1.clear()
+	global handler_angle
+	handler_angle = LimitedAngle(0, [-40, 40])
+	global trajectory_line
+	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)[0]
+
+	animation()
 
 
-button_train: LabelFrame = create_button(control_group, name="Train & Evaluation", function=on_button_activate)
+button_data: LabelFrame = create_button(control_group, name="Import Playground Data", function=on_button_data_activate)
+button_data.pack(fill="x")
+
+button_train: LabelFrame = create_button(control_group, name="Train & Evaluation", function=on_button_train_activate)
 button_train.pack(side="bottom", fill="x")
 
 window.mainloop()

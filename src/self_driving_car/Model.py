@@ -7,14 +7,15 @@ from self_driving_car.network.Activation import ReLU, Sigmoid
 from self_driving_car.network.Layer import Linear
 
 
-class Perceptron(Module):
+class CarController(Module):
 	def __init__(
 		self, input_features: int, output_features: int, learning_rate: float, dtype: type = numpy.float32
 	) -> None:
-		super(Perceptron, self).__init__()
+		super(CarController, self).__init__()
 
 		hidden_layer_features: int = int((input_features + output_features) / 2)
 
+		self.input_feature: int = input_features
 		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
 		self.activation0 = ReLU()
 		self.hidden_layer = Linear(hidden_layer_features, hidden_layer_features, dtype)

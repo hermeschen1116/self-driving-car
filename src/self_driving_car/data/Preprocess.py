@@ -1,8 +1,28 @@
 import os
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy
 import polars
+
+from self_driving_car.driving.Geometry import Point
+
+
+def read_playground_file(source: Union[str, os.PathLike]) -> Tuple[Point, float, List[Point], List[Point]]:
+	if not os.path.exists(source):
+		raise ValueError(f"Input path '{source}' doesn't exist.")
+
+	raw_data: List[List[float]] = []
+	with open(source, "r", encoding="utf-8") as file:
+		for line in file.readlines():
+			values: List[float] = [float(eval(value.strip())) for value in line.strip().split(",")]
+			raw_data.append(values)
+
+	initial_point: Point = Point(numpy.array(raw_data[0][:2]))
+	initial_angle: float = raw_data[0][-1]
+	goal_line: List[Point] = [Point(numpy.array(raw_data[1])), Point(numpy.array(raw_data[2]))]
+	playground: List[Point] = [Point(numpy.array(coordinate)) for coordinate in raw_data[3:]]
+
+	return initial_point, initial_angle, goal_line, playground
 
 
 def read_file(source: Union[str, os.PathLike]) -> List[Dict[str, Any]]:
@@ -14,28 +34,12 @@ def read_file(source: Union[str, os.PathLike]) -> List[Dict[str, Any]]:
 	with open(source, "r", encoding="utf-8") as file:
 		for line in file.readlines():
 			values: list = list(line.strip().split(" "))
-			raw_dataset.append({"data": [float(eval(value)) for value in values[:-1]], "label": int(eval(values[-1]))})
+			raw_dataset.append({
+				"data": [float(eval(value)) for value in values[:-1]],
+				"label": float(eval(values[-1])),
+			})
 
 	return raw_dataset
-
-
-def label_regularization(dataset: polars.DataFrame) -> polars.DataFrame:
-	old_labels: list = dataset.get_column("label").unique().to_list()
-	new_labels_map: dict = {label: i for i, label in enumerate(old_labels)}
-
-	dataset = dataset.with_columns(polars.col("label").replace_strict(new_labels_map).alias("label"))
-
-	return dataset
-
-
-def add_one_hot_label(dataset: polars.DataFrame) -> polars.DataFrame:
-	labels: list = dataset.get_column("label").unique().to_list()
-	one_hot_labels: list = [numpy.array(label) for label in numpy.eye(len(labels)).tolist()]
-	one_hot_labels_map: dict = dict(zip(labels, one_hot_labels))
-
-	dataset = dataset.with_columns(polars.col("label").replace_strict(one_hot_labels_map).alias("one_hot_label"))
-
-	return dataset
 
 
 def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.DataFrame:
@@ -43,11 +47,8 @@ def create_dataset(raw_dataset: List[Dict[str, Any]]) -> polars.DataFrame:
 	label: list = [row["label"] for row in raw_dataset]
 
 	dataset: polars.DataFrame = polars.DataFrame(
-		{"data": data, "label": label}, schema={"data": polars.Array, "label": polars.Int64}, orient="col"
+		{"data": data, "label": label}, schema={"data": polars.Array, "label": polars.Float64}, orient="col"
 	)
-
-	dataset = label_regularization(dataset)
-	dataset = add_one_hot_label(dataset)
 
 	return dataset
 
