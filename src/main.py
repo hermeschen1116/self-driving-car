@@ -151,8 +151,8 @@ def animation():
 				title="Self Driving Car", message=f"Experiment successfully finished!\nLog file write to {log_path}."
 			)
 		if result is False:
-			print("Experiment failed. The car broken.")
-			messagebox.showerror(title="Self Driving Car", message="Experiment failed. The car broken.")
+			print("Experiment failed. The car is broken.")
+			messagebox.showerror(title="Self Driving Car", message="Experiment failed. The car is broken.")
 		return
 
 	global car

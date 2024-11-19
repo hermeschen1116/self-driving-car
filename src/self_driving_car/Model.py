@@ -1,7 +1,7 @@
 import numpy
 
 from self_driving_car.network import Module
-from self_driving_car.network.Activation import ReLU, Sigmoid
+from self_driving_car.network.Activation import Sigmoid
 from self_driving_car.network.Layer import Linear
 
 
@@ -12,16 +12,17 @@ class CarController(Module):
 		super(CarController, self).__init__()
 
 		hidden_layer_features: int = int((input_features + output_features) / 2)
-		self.__num_hidden_layer: int = 3
 
 		self.input_feature: int = input_features
 		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
-		self.input_activation = ReLU()
-		self.hidden_layer: list = [
-			Linear(hidden_layer_features, hidden_layer_features, dtype) for _ in range(self.__num_hidden_layer)
-		]
-		self.hidden_activation: list = [ReLU() for _ in range(self.__num_hidden_layer)]
-		self.output_layer = Linear(hidden_layer_features, output_features, dtype)
+		self.input_activation = Sigmoid()
+		self.hidden_layer0 = Linear(hidden_layer_features, 7, dtype)
+		self.hidden_activation0 = Sigmoid()
+		self.hidden_layer1 = Linear(7, 4, dtype)
+		self.hidden_activation1 = Sigmoid()
+		self.hidden_layer2 = Linear(4, 2, dtype)
+		self.hidden_activation2 = Sigmoid()
+		self.output_layer = Linear(2, output_features, dtype)
 		self.output_activation = Sigmoid()
 
 		self.learning_rate: float = learning_rate
@@ -56,9 +57,14 @@ class CarController(Module):
 		local_gradient: numpy.ndarray = loss_gradient * self.output_activation.gradient
 		layer_gradient: numpy.ndarray = self.output_layer.optimize(self.learning_rate * local_gradient)
 
-		for i in range(self.__num_hidden_layer - 1, -1, -1):
-			local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation[i].gradient
-			layer_gradient = self.hidden_layer[i].optimize(self.learning_rate * local_gradient)
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation0.gradient
+		layer_gradient = self.hidden_layer0.optimize(self.learning_rate * local_gradient)
+
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation1.gradient
+		layer_gradient = self.hidden_layer1.optimize(self.learning_rate * local_gradient)
+
+		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.hidden_activation2.gradient
+		layer_gradient = self.hidden_layer2.optimize(self.learning_rate * local_gradient)
 
 		local_gradient = local_gradient.dot(layer_gradient[:-1].T) * self.input_activation.gradient
 		self.input_layer.optimize(self.learning_rate * local_gradient)
