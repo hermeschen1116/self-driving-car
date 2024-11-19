@@ -108,6 +108,7 @@ def control_car() -> Optional[bool]:
 	if controller.input_feature == 5:
 		input_data = numpy.concatenate((car.car_position, input_data))
 
+	input_data = input_data.reshape((1, input_data.shape[0]))
 	angle: float = controller.forward(input_data)[0]
 
 	global handler_angle
@@ -141,8 +142,10 @@ def animation():
 			log_path: str = "./controller_record.txt"
 			with open(log_path, "w") as file:
 				file.writelines([f"{''.join([str(value) for value in record])}\n" for record in controller_record])
+			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
 			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
 		if result is False:
+			print("Experiment failed. The car broken.")
 			messagebox.showerror("Experiment failed. The car broken.")
 		return
 
