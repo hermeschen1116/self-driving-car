@@ -140,7 +140,7 @@ def animation():
 	if result is not None:
 		log_path: str = "./dist/controller_record.txt"
 		log: List[str] = [f"{' '.join([str(value) for value in record])}\n" for record in controller_record]
-		print(log)
+		print("".join(log))
 		if result:
 			with open(log_path, "w") as file:
 				file.writelines(log)
