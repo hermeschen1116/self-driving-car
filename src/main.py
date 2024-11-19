@@ -58,6 +58,7 @@ canvas_playground.get_tk_widget().pack(side="left", fill="x")
 
 def on_button_data_activate():
 	ax.clear()
+	ax.axis("off")
 
 	file_path: str = askopenfilename()
 	if not file_path:
