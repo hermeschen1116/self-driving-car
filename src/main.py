@@ -30,11 +30,11 @@ variables: dict = {
 	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.6),
 	"num_epochs": tkinter.IntVar(name="num_epochs", value=500),
 }
-car, playground = None, None
-car_circle, sensor_line = None, None
+playground = None
+car, car_circle, sensor_line = None, None, None
 trajectory_x, trajectory_y, trajectory_line = [], [], None
-controller = None
 handler_angle = LimitedAngle(0, [0, 0])
+controller = None
 controller_record: List[List[float]] = []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
@@ -60,6 +60,24 @@ def on_button_data_activate():
 	ax.clear()
 	ax.axis("off")
 
+	global \
+		playground, \
+		car, \
+		car_circle, \
+		sensor_line, \
+		trajectory_x, \
+		trajectory_y, \
+		trajectory_line, \
+		handler_angle, \
+		controller, \
+		controller_record
+	playground = None
+	car, car_circle, sensor_line = None, None, None
+	trajectory_x, trajectory_y, trajectory_line = [], [], None
+	handler_angle = LimitedAngle(0, [0, 0])
+	controller = None
+	controller_record: List[List[float]] = []
+
 	file_path: str = askopenfilename()
 	if not file_path:
 		messagebox.showerror(title="Self Driving Car", message="No file selected.")
@@ -68,7 +86,6 @@ def on_button_data_activate():
 
 	raw_data = read_playground_file(file_path)
 
-	global car, playground
 	car = Car(initial_position=raw_data[0], initial_direction=raw_data[1])
 	playground = Playground(raw_data[3], raw_data[2])
 
@@ -89,7 +106,6 @@ def on_button_data_activate():
 
 def control_car() -> Optional[bool]:
 	global car, controller
-
 	if car is None:
 		raise ValueError("Self Driving Car: car object not initialized.")
 	if controller is None:
