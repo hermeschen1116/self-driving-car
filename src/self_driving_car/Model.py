@@ -11,18 +11,16 @@ class CarController(Module):
 	) -> None:
 		super(CarController, self).__init__()
 
-		hidden_layer_features: int = int((input_features + output_features) / 2)
-
 		self.input_feature: int = input_features
-		self.input_layer = Linear(input_features, hidden_layer_features, dtype)
+		self.input_layer = Linear(input_features, 17, dtype)
 		self.input_activation = Sigmoid()
-		self.hidden_layer0 = Linear(hidden_layer_features, 7, dtype)
+		self.hidden_layer0 = Linear(17, 20, dtype)
 		self.hidden_activation0 = Sigmoid()
-		self.hidden_layer1 = Linear(7, 4, dtype)
+		self.hidden_layer1 = Linear(20, 15, dtype)
 		self.hidden_activation1 = Sigmoid()
-		self.hidden_layer2 = Linear(4, 2, dtype)
+		self.hidden_layer2 = Linear(15, 10, dtype)
 		self.hidden_activation2 = Sigmoid()
-		self.output_layer = Linear(2, output_features, dtype)
+		self.output_layer = Linear(10, output_features, dtype)
 		self.output_activation = Sigmoid()
 
 		self.learning_rate: float = learning_rate
