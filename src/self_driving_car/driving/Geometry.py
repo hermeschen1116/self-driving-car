@@ -67,7 +67,7 @@ class Point:
 
 	def __eq__(self, value: object, /) -> bool:
 		if not isinstance(value, Point):
-			raise NotImplementedError
+			return False
 
 		return numpy.array_equal(value.coordinate, self.coordinate)
 
@@ -130,7 +130,7 @@ class Radial:
 	def contains(self, point: Point) -> bool:
 		ts: numpy.ndarray = (point - self.__base_point) / self.direction_vector
 
-		return numpy.all(ts == ts[0]).item() and numpy.all(ts >= 0).item()
+		return numpy.allclose(ts, ts[0], atol=1e-9) and numpy.all(ts >= 0).item()
 
 	def get_point(self, t: float) -> Point:
 		if t < 0:
@@ -159,7 +159,7 @@ class LineSegment:
 	def contains(self, point: Point) -> bool:
 		ts: numpy.ndarray = (point - self.endpoint1) / self.direction_vector
 
-		return numpy.all(ts == ts[0]).item() and numpy.all(ts >= 0).item() and 0 <= ts[0] <= self.max_t
+		return numpy.allclose(ts, ts[0], atol=1e-9) and numpy.all(ts >= 0).item() and 0 <= ts[0] <= self.max_t
 
 	def intersect_with_radial(self, radial: Radial) -> Optional[Point]:
 		xs: numpy.ndarray = numpy.column_stack((self.direction_vector, -radial.direction_vector))
