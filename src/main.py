@@ -62,6 +62,14 @@ def on_button_data_activate():
 	for line in ax.lines:
 		line.remove()
 
+	global car_circle, sensor_line
+	if car_circle is None:
+		raise ValueError("Self Driving Car: car_circle object not initialized.")
+	if sensor_line is None:
+		raise ValueError("Self Driving Car: sensor_line object not initialized.")
+	car_circle.remove()
+	sensor_line.remove()
+
 	file_path: str = askopenfilename()
 	if not file_path:
 		messagebox.showerror(title="Self Driving Car", message="No file selected.")
@@ -78,7 +86,6 @@ def on_button_data_activate():
 	for edge in playground_edges:
 		ax.add_line(edge)
 
-	global car_circle, sensor_line
 	car_circle, sensor_line = car.draws()
 	ax.add_patch(car_circle)
 	ax.add_line(sensor_line)
