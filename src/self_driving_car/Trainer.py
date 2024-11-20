@@ -1,14 +1,10 @@
 import tkinter
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import numpy
 import polars
-from matplotlib.axes import Axes
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from sklearn.metrics import accuracy_score, classification_report
 
 from self_driving_car.Model import CarController
-from self_driving_car.data.Visualize import draw_points, get_points_groups
 
 
 def get_in_out_features(dataset: polars.DataFrame) -> Tuple[int, int]:
@@ -32,8 +28,8 @@ def train(
 
 			output: numpy.ndarray = model(data)
 
-			loss: float = loss_function(output, label)
-			all_loss.append(loss)
+			loss: numpy.ndarray = loss_function(output, label)
+			all_loss.append(loss.item())
 
 			model.optimize(loss_function.gradient)
 
@@ -41,29 +37,3 @@ def train(
 		print(f"epchs{i}, loss: {total_loss}")
 
 	return num_epochs, total_loss
-
-
-def evaluate(
-	dataset: polars.DataFrame,
-	model: CarController,
-	ax: Axes,
-	canvas: FigureCanvasTkAgg,
-	colors: List[str],
-	variables: Dict[str, tkinter.Variable],
-) -> float:
-	label_true: list = dataset.get_column("label").to_list()
-	label_predicted: list = []
-
-	for row in dataset.iter_slices(4):
-		data = row["data"].to_numpy()
-
-		output: numpy.ndarray = model(data)
-		label_predicted += output.argmax(-1).tolist()
-
-	group_points: list = get_points_groups(dataset, label_predicted)
-	draw_points(ax, group_points, colors)
-	canvas.draw()
-
-	print(classification_report(label_true, label_predicted))
-
-	return accuracy_score(label_true, label_predicted)

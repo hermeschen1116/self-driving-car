@@ -27,15 +27,15 @@ numpy.random.seed(37710)
 window: tkinter.Tk = create_window("Self Driving Car", "")
 
 variables: dict = {
-	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.1),
-	"num_epochs": tkinter.IntVar(name="num_epochs", value=20),
+	"learning_rate": tkinter.DoubleVar(name="learning_rate", value=0.6),
+	"num_epochs": tkinter.IntVar(name="num_epochs", value=500),
 }
-car, playground = None, None
-car_circle, sensor_line = None, None
+playground = None
+car, car_circle, sensor_line = None, None, None
 trajectory_x, trajectory_y, trajectory_line = [], [], None
-controller = None
 handler_angle = LimitedAngle(0, [0, 0])
-controller_record: List[List[float]] = []
+controller = None
+controller_record = []
 
 control_group = tkinter.LabelFrame(padx=10, pady=10, border=0)
 control_group.pack(side="right")
@@ -57,20 +57,35 @@ canvas_playground.get_tk_widget().pack(side="left", fill="x")
 
 
 def on_button_data_activate():
-	for patch in ax.patches:
-		patch.remove()
-	for line in ax.lines:
-		line.remove()
+	ax.clear()
+	ax.axis("off")
+
+	global \
+		playground, \
+		car, \
+		car_circle, \
+		sensor_line, \
+		trajectory_x, \
+		trajectory_y, \
+		trajectory_line, \
+		handler_angle, \
+		controller, \
+		controller_record
+	playground = None
+	car, car_circle, sensor_line = None, None, None
+	trajectory_x, trajectory_y, trajectory_line = [], [], None
+	handler_angle = LimitedAngle(0, [0, 0])
+	controller = None
+	controller_record = []
 
 	file_path: str = askopenfilename()
 	if not file_path:
-		messagebox.showerror("No file selected.")
+		messagebox.showerror(title="Self Driving Car", message="No file selected.")
 		return
 	print(f"playground data file: {file_path}")
 
 	raw_data = read_playground_file(file_path)
 
-	global car, playground
 	car = Car(initial_position=raw_data[0], initial_direction=raw_data[1])
 	playground = Playground(raw_data[3], raw_data[2])
 
@@ -78,7 +93,6 @@ def on_button_data_activate():
 	for edge in playground_edges:
 		ax.add_line(edge)
 
-	global car_circle, sensor_line
 	car_circle, sensor_line = car.draws()
 	ax.add_patch(car_circle)
 	ax.add_line(sensor_line)
@@ -92,7 +106,6 @@ def on_button_data_activate():
 
 def control_car() -> Optional[bool]:
 	global car, controller
-
 	if car is None:
 		raise ValueError("Self Driving Car: car object not initialized.")
 	if controller is None:
@@ -118,7 +131,7 @@ def control_car() -> Optional[bool]:
 	car(handler_angle, playground)
 
 	global controller_record
-	controller_record.append(input_data.tolist() + [car.car_angle])
+	controller_record.append(input_data.tolist()[0] + [car.car_angle])
 
 	if car.check_goal(playground):
 		return True
@@ -128,25 +141,29 @@ def control_car() -> Optional[bool]:
 
 def animation():
 	global car_circle, sensor_line
-	if car_circle is None:
-		raise ValueError("Self Driving Car: car_circle object not initialized.")
-	if sensor_line is None:
-		raise ValueError("Self Driving Car: sensor_line object not initialized.")
-	car_circle.remove()
-	sensor_line.remove()
+	if car_circle is not None:
+		car_circle.remove()
+	if sensor_line is not None:
+		sensor_line.remove()
 
 	result = control_car()
 
 	if result is not None:
+		log_path: str = "./dist/controller_record.txt"
+		log: List[str] = [
+			f"{' '.join([f'{round(value, 5):.5f}' for value in record])}\n" for record in controller_record
+		]
+		print("".join(log))
 		if result:
-			log_path: str = "./controller_record.txt"
 			with open(log_path, "w") as file:
-				file.writelines([f"{''.join([str(value) for value in record])}\n" for record in controller_record])
+				file.writelines(log)
 			print(f"Experiment successfully finished!\nLog file write to {log_path}.")
-			messagebox.showinfo(f"Experiment successfully finished!\nLog file write to {log_path}.")
+			messagebox.showinfo(
+				title="Self Driving Car", message=f"Experiment successfully finished!\nLog file write to {log_path}."
+			)
 		if result is False:
-			print("Experiment failed. The car broken.")
-			messagebox.showerror("Experiment failed. The car broken.")
+			print("Experiment failed. The car is broken.")
+			messagebox.showerror(title="Self Driving Car", message="Experiment failed. The car is broken.")
 		return
 
 	global car
@@ -169,9 +186,21 @@ def animation():
 
 
 def on_button_train_activate() -> None:
+	global car_circle, sensor_line, trajectory_line, trajectory_x, trajectory_y
+	if car_circle is not None:
+		car_circle.remove()
+		car_circle = None
+	if sensor_line is not None:
+		sensor_line.remove()
+		sensor_line = None
+	if trajectory_line is not None:
+		trajectory_line.remove()
+		trajectory_line = None
+	trajectory_x, trajectory_y = [], []
+
 	file_path: str = askopenfilename()
 	if not file_path:
-		messagebox.showerror("No file selected.")
+		messagebox.showerror(title="Self Driving Car", message="No file selected.")
 		return
 	print(f"train data file: {file_path}")
 
@@ -194,7 +223,6 @@ Train loss: {round(train_loss * 100, 2)}%
 
 	global handler_angle
 	handler_angle = LimitedAngle(0, [-40, 40])
-	global trajectory_line
 	trajectory_line = ax.plot([], [], color="blue", alpha=0.6)[0]
 
 	animation()
