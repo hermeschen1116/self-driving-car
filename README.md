@@ -1,6 +1,5 @@
-# Perceptron
+# Self Driving Car
 
-> implement perceptron by Numpy
 
 ## Tech Stack
 
